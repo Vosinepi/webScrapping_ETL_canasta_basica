@@ -1,3 +1,6 @@
 #directorios ignorados
 
 venv/
+certificado/
+
+certificados_ddbb.py
