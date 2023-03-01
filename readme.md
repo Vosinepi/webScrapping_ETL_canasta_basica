@@ -74,6 +74,10 @@ Canasta_Basica.ipynb
 
 - Los datos descargados se guardan en la carpeta `Data`
 - Los datos normalizados son almacenados en la base de datos.
+- Los datos normalizados son almacenados en un archivo .xls
+- Los datos normalizados son almacenados en un archivo .csv
+- Los datos normalizados son transformados en una lista larga para poder ser visualizados en Data Studio Looker
+- La lista larga es subida a una DDBB en azure para ser utilizada en Data Studio Looker.
 
 ## A futuro
 - Agregar mas supermercados
