@@ -1,0 +1,1 @@
+DELETE from precios where fecha = CURRENT_DATE;

@@ -2,5 +2,6 @@
 
 venv/
 certificado/
-
+logs/
+pgdata/
 certificados_ddbb.py

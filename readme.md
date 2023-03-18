@@ -1,6 +1,6 @@
 ## Iber Ismael Piovani
 
-# Pequeño ETL de Web Scraping
+# Pequeño ETL de Web Scraping utilizando Airflow para automatizar el proceso
 
 ## Data Studio Looker
 
@@ -26,6 +26,7 @@ Mediante el listado de Canasta Basica del INDEC obtenemos los precios de la pagi
 - [tabulate](https://pypi.org/project/tabulate/)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 - [requests](https://requests.readthedocs.io/en/master/)
+- [airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
 
 ## Uso
 
@@ -35,23 +36,16 @@ Mediante el listado de Canasta Basica del INDEC obtenemos los precios de la pagi
 git clone
 ```
 
-- Crear un entorno virtual
+- Crear un entorno virtual para manipular los scripts de ser necesario
 
 ```
 python -m venv venv
 ```
 
-- correr Docker de SQL Server
+- Activar el entorno virtual
 
 ```
-docker run -d --name canasta_basica_variacion -v my_db:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=variacion postgres
-```
-
-test ddbb
-
-```
-docker exec -it canasta_basica_variacion psql -h localhost -U postgres -W variacion
-
+source venv/bin/activate
 ```
 
 - Instalar las dependencias
@@ -60,15 +54,45 @@ docker exec -it canasta_basica_variacion psql -h localhost -U postgres -W variac
 pip install -r requirements.txt
 ```
 
-- cargar las credenciales de la base de datos en el archivo `crear_tabla.ipnyb` y correrlo para crear la tabla en la base de datos
+- Crear contenedor de postgres para almacenar los datos, correr el docker-compose-postgres.yaml
 
 ```
-Canasta_Basica.ipynb
+docker-compose -f docker-compose-postgres.yaml up -d
+```
+
+- test ddbb
+
+```
+docker exec -it canasta_basica_variacion psql -h host.docker.internal -U postgres -W variacion
+
+```
+
+- Crear contenedor de airflow para automatizar el proceso, correr el docker-compose-airflow.yaml
+
+```
+docker-compose -f docker-compose-airflow.yaml up -d
+```
+
+- test airflow
+
+```
+http://localhost:8080/
+```
+
+- cargar las credenciales propias de las bases de datos locales y cloud.
+
+```
+certificados_ddbb.py
 ```
 
 - correr todas las celdas de codigo del archivo `Canasta_Basica.ipynb` para obtener los datos de la pagina de Coto Digital y guardarlos en un archivo CSV, en un archivo .xls y en la base de datos creada previamente.
 
 ```
+
+## ETL
+
+Una vez configurado el Dag con las credenciales de las bases de datos, se puede correr el dag para que se ejecute el proceso de extraccion, transformacion y carga de datos.
+Luego se ejecutara de manera periodica.
 
 ## Resultados
 
