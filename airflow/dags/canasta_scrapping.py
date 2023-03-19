@@ -322,8 +322,10 @@ def cargar_ddbb_local(listado_productos):
 def task_scrapping():
     scrapping(canasta)
 
-    # Cargar datos en la base de datos local
+    # Cargar datos y backup en la base de datos local
 
+
+def cargar_todo():
     cargar_ddbb_local(listado)
 
     # Guardar datos en csv y excel
@@ -362,3 +364,13 @@ t0 = PythonOperator(
     python_callable=task_scrapping,
     dag=dag,
 )
+
+# Tarea para cargar datos en la base de datos local y en la cloud
+
+t1 = PythonOperator(
+    task_id="cargar_todo",
+    python_callable=cargar_todo,
+    dag=dag,
+)
+
+t0 >> t1
