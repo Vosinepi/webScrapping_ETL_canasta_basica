@@ -6,8 +6,10 @@ import re
 import psycopg2
 import datetime as dt
 from datetime import datetime, timedelta
+import shutil
 from airflow import DAG
 from airflow.decorators import task, dag
+
 from airflow.operators.python_operator import PythonOperator
 
 from certificados_ddbb import ddbb_pass
@@ -123,7 +125,9 @@ def scrapping(canasta):
         else:
             canasta.loc[producto, "url_coto"] == "nan"
             print(producto, "no hay url")
-
+    if "nan" in listado.values():
+        print("hay un Nan en el diccionario")
+    print(f"Listado desde scrappin \n{listado}")
     for producto in listado:
         if producto == "fecha":
             continue
@@ -148,6 +152,12 @@ def guardar_csv_excel():
         cur.execute("SELECT * FROM precios")
         rows = cur.fetchall()
         conn.commit()
+
+    # si la tabla tiene nan salir
+    print(f"Listado desde guardar_csv_excel \n {rows}")
+    if "nan" in rows:
+        print("hay un Nan en la tabla")
+        return None
 
     # crear un dataframe si no existe o actualizarlo
 
@@ -208,6 +218,10 @@ def cargar_dddb_cloud(datos):
 
     :param datos: el dataframe que quiero subir a la base de datos
     """
+    print(f"Listado desde cargar_dddb_cloud \n {datos}")
+    if "nan" in datos["precio"]:
+        print("hay un Nan en el diccionario")
+        return
     # Conexión a la base de datos
 
     conn = psycopg2.connect(
@@ -227,7 +241,9 @@ def cargar_dddb_cloud(datos):
         # Insertar los datos en la tabla
 
         for i in datos.index:
-            if datos.loc[i, "fecha"] == dt.datetime.now().strftime("%Y-%m-%d"):
+            if datos.loc[i, "fecha"].strftime("%Y-%m-%d") == dt.datetime.now().strftime(
+                "%Y-%m-%d"
+            ):
                 producto_fecha = cur.execute(
                     "SELECT fecha, producto FROM precios_lista_larga WHERE fecha = %s AND producto = %s",
                     (datos.loc[i, "fecha"], datos.loc[i, "producto"]),
@@ -259,7 +275,7 @@ def cargar_dddb_cloud(datos):
     cur.close()
     conn.close()
 
-    print("Datos cargados")
+    print("DATOS")
 
 
 def cargar_ddbb_local(listado_productos):
@@ -269,6 +285,10 @@ def cargar_ddbb_local(listado_productos):
 
     :param listado_productos: un diccionario los productos y el precio
     """
+    print(f"Listado desde cargar_ddbb_local \n{listado_productos}")
+    if "null" in listado_productos.values():
+        print("hay un Nan en el diccionario")
+        return
     conn = psycopg2.connect(
         host="host.docker.internal",
         database="variacion",
@@ -319,13 +339,53 @@ def cargar_ddbb_local(listado_productos):
 # Funcion para el DAG
 
 
+# @dag(
+#     dag_id="canasta_dag",
+#     description="DAG para scrapping de canasta familiar",
+#     schedule_interval="30 9 * * *",
+#     default_args={
+#         "owner": "airflow",
+#         "retries": 1,
+#         "retry_delay": timedelta(minutes=20),
+#         "start_date": datetime(2023, 3, 16),
+#         "email": ["ismaelpiovani@gmail.com"],
+#         "email_on_success": True,
+#         "email_on_failure": True,
+#         "email_on_retry": True,
+#     },
+#     catchup=False,
+# )
+# def etl():
+# @task
+def backup():
+    """
+    Hace un backup de los archivos csv y excel
+    """
+    # Hacer backup de los archivos csv y excel
+    fecha = (dt.datetime.now() - dt.timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+    print("Haciendo backup de los archivos csv y excel")
+    try:
+        shutil.copy(
+            "/opt/airflow/data/precios.csv",
+            f"/opt/airflow/data/backup/precios{fecha}.csv",
+        )
+        shutil.copy(
+            "/opt/airflow/data/precios.xlsx",
+            f"/opt/airflow/data/backup/precios{fecha}.xlsx",
+        )
+    except:
+        print("Error al hacer el backup")
+
+    print("Backup realizado")
+
+
 def task_scrapping():
     scrapping(canasta)
 
     # Cargar datos y backup en la base de datos local
 
-
-def cargar_todo():
+    # @task
+    # def cargar_todo():
     cargar_ddbb_local(listado)
 
     # Guardar datos en csv y excel
@@ -336,6 +396,8 @@ def cargar_todo():
 
     cargar_dddb_cloud(lista_larga)
 
+
+# etl()
 
 # Definir DAG
 
@@ -349,7 +411,6 @@ dag = DAG(
         "retry_delay": timedelta(minutes=20),
         "start_date": datetime(2023, 3, 16),
         "email": ["ismaelpiovani@gmail.com"],
-        "email_on_success": True,
         "email_on_failure": True,
         "email_on_retry": True,
     },
@@ -357,20 +418,26 @@ dag = DAG(
 )
 
 
+# Tarea para hacer backup de los archivos csv y excel
+t0 = PythonOperator(
+    task_id="backup",
+    python_callable=backup,
+    dag=dag,
+)
 # Tarea para scrapping
 
-t0 = PythonOperator(
+t1 = PythonOperator(
     task_id="tarea_scrapping",
     python_callable=task_scrapping,
     dag=dag,
 )
 
-# Tarea para cargar datos en la base de datos local y en la cloud
+# # Tarea para cargar datos en la base de datos local y en la cloud
 
-t1 = PythonOperator(
-    task_id="cargar_todo",
-    python_callable=cargar_todo,
-    dag=dag,
-)
+# t2 = PythonOperator(
+#     task_id="cargar_todo",
+#     python_callable=cargar_todo,
+#     dag=dag,
+# )
 
 t0 >> t1
