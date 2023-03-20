@@ -5,3 +5,4 @@ certificado/
 logs/
 pgdata/
 certificados_ddbb.py
+/airflow/data/backup
