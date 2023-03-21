@@ -1,8 +1,8 @@
 #directorios ignorados
-
+airflow/
 venv/
 certificado/
 logs/
 pgdata/
 certificados_ddbb.py
-/airflow/data/backup
+backup/

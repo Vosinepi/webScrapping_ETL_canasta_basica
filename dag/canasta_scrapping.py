@@ -129,7 +129,6 @@ def scrapping(canasta):
     if "nan" in listado.values():
         print("hay un Nan en el diccionario")
     print(f"Listado desde scrappin \n{listado}")
-
     for producto in listado:
         if producto == "fecha":
             continue
@@ -211,7 +210,6 @@ def guardar_csv_excel():
         value_name="precio",
     )
     lista_larga.to_csv("/opt/airflow/data/precios_lista_larga.csv", index=False)
-    lista_larga["fecha"] = pd.to_datetime(lista_larga["fecha"])
 
 
 def cargar_dddb_cloud(datos):
@@ -365,7 +363,7 @@ def backup():
     Hace un backup de los archivos csv y excel
     """
     # Hacer backup de los archivos csv y excel
-    fecha = (dt.datetime.now() - dt.timedelta(days=1)).strftime("%Y-%m-%d")
+    fecha = (dt.datetime.now() - dt.timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
     print("Haciendo backup de los archivos csv y excel")
     try:
         shutil.copy(
@@ -407,7 +405,7 @@ def task_scrapping():
 dag = DAG(
     dag_id="canasta_dag",
     description="DAG para scrapping de canasta familiar",
-    schedule_interval="30 16 * * *",
+    schedule_interval="30 9 * * *",
     default_args={
         "owner": "airflow",
         "retries": 1,
