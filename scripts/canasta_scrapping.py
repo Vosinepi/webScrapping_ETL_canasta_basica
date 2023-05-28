@@ -141,7 +141,7 @@ def cargar_dddb_cloud(datos):
     # Conexión a la base de datos
 
     conn = psycopg2.connect(
-        host="database-2.crdqtsbdpist.us-east-2.rds.amazonaws.com",
+        host="canasta-2.crdqtsbdpist.us-east-2.rds.amazonaws.com",
         database="postgres",
         user="postgres",
         password=ddbb_pass,
@@ -150,7 +150,7 @@ def cargar_dddb_cloud(datos):
     # Crear la tabla si no existe
     with conn.cursor() as cur:
         cur.execute(
-            f"CREATE TABLE IF NOT EXISTS precios_lista_larga (fecha DATE, producto VARCHAR(255), precio FLOAT)"
+            f"CREATE TABLE IF NOT EXISTS precios_lista_larga (fecha DATE, producto VARCHAR(255), precio FLOAT, id SERIAL PRIMARY KEY)"
         )
         conn.commit()
 

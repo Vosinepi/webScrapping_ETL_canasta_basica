@@ -5,4 +5,6 @@ certificado/
 logs/
 pgdata/
 certificados_ddbb.py
+certificados_twitter.py
+robot-yami.py
 backup/
