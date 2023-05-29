@@ -1,6 +1,6 @@
 import requests as req
 import pandas as pd
-
+import tweepy
 from bs4 import BeautifulSoup
 import re
 import psycopg2
@@ -15,6 +15,16 @@ from airflow.operators.email_operator import EmailOperator
 
 from certificados_ddbb import ddbb_pass
 
+from bot_twit import (
+    variacion,
+    productos_mas_variacion,
+    twitear,
+    mensaje_twitter,
+    limpio_precios,
+    precios,
+    lista_larga,
+    nombre_mes,
+)
 
 listado = {
     "fecha": dt.datetime.now().strftime("%Y-%m-%d")
@@ -332,34 +342,6 @@ def cargar_ddbb_local(listado_productos):
     conn.close()
 
 
-# if __name__ == "__main__":
-#     scrapping(canasta)
-#     cargar_ddbb_local(listado)
-#     guardar_csv_excel()
-#     cargar_dddb_cloud(lista_larga)
-
-
-# Funcion para el DAG
-
-
-# @dag(
-#     dag_id="canasta_dag",
-#     description="DAG para scrapping de canasta familiar",
-#     schedule_interval="30 9 * * *",
-#     default_args={
-#         "owner": "airflow",
-#         "retries": 1,
-#         "retry_delay": timedelta(minutes=20),
-#         "start_date": datetime(2023, 3, 16),
-#         "email": ["ismaelpiovani@gmail.com"],
-#         "email_on_success": True,
-#         "email_on_failure": True,
-#         "email_on_retry": True,
-#     },
-#     catchup=False,
-# )
-# def etl():
-# @task
 def backup():
     """
     Hace un backup de los archivos csv y excel
@@ -443,12 +425,41 @@ t2 = EmailOperator(
     dag=dag,
 )
 
-# # Tarea para cargar datos en la base de datos local y en la cloud
+t3 = PythonOperator(
+    task_id="productos_variacion",
+    python_callable=productos_mas_variacion,
+    op_kwargs={
+        "limpio_precios": limpio_precios(
+            precios(lista_larga)[0], precios(lista_larga)[1]
+        )
+    },
+    dag=dag,
+)
 
-# t2 = PythonOperator(
-#     task_id="cargar_todo",
-#     python_callable=cargar_todo,
-#     dag=dag,
-# )
+t4 = PythonOperator(
+    task_id="twitear",
+    python_callable=twitear,
+    op_kwargs={
+        "texto1": mensaje_twitter(variacion, max, min)[0],
+        "texto2": mensaje_twitter(variacion, max, min)[1],
+        "texto3": mensaje_twitter(variacion, max, min)[2],
+    },
+    dag=dag,
+)
 
-t0 >> t1 >> t2
+t5 = EmailOperator(
+    task_id="email",
+    to="ismaelpiovani@gmail.com",
+    subject="Bot_twitter_canasta_basica",
+    html_content=f"""
+    <h3>La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%</h3>
+    <h4>Los productos con mayor aumento al día de hoy son:</h4>
+    <p>{mensaje_twitter(variacion, max, min)[1]}</p>
+    <h4>Los productos con mayor reducción de precio al día de hoy son:</h4>
+    <p>{mensaje_twitter(variacion, max, min)[2]}</p>
+    """,
+    dag=dag,
+)
+
+
+t0 >> t1 >> t2 >> t3 >> t4 >> t5
