@@ -26,7 +26,9 @@ Mediante el listado de Canasta Basica del INDEC obtenemos los precios de la pagi
 - [tabulate](https://pypi.org/project/tabulate/)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 - [requests](https://requests.readthedocs.io/en/master/)
+- [Tweepy](https://docs.tweepy.org/en/latest/)
 - [airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
+- [docker](https://docs.docker.com/)
 
 ## Uso
 
@@ -102,6 +104,13 @@ Luego se ejecutara de manera periodica.
 - Los datos normalizados son almacenados en un archivo .csv
 - Los datos normalizados son transformados en una lista larga para poder ser visualizados en Data Studio Looker
 - La lista larga es subida a una DDBB en azure para ser utilizada en Data Studio Looker.
+
+## Bot de Twitter
+Publica los precios de los productos en Twitter.
+
+- Cargar las credenciales de la API de Twitter
+
+
 
 ## A futuro
 - Agregar mas supermercados
