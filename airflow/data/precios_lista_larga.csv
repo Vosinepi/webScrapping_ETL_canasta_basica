@@ -100,6 +100,7 @@ fecha,producto,precio
 2023-05-27,pan_frances,1284.71
 2023-05-28,pan_frances,1284.71
 2023-05-29,pan_frances,1284.71
+2023-05-30,pan_frances,1284.71
 2023-02-17,galletitas_dulces,192.49
 2023-02-18,galletitas_dulces,192.49
 2023-02-20,galletitas_dulces,192.49
@@ -201,6 +202,7 @@ fecha,producto,precio
 2023-05-27,galletitas_dulces,221.91
 2023-05-28,galletitas_dulces,221.91
 2023-05-29,galletitas_dulces,221.91
+2023-05-30,galletitas_dulces,221.91
 2023-02-17,galletitas_de_agua,339.49
 2023-02-18,galletitas_de_agua,339.49
 2023-02-20,galletitas_de_agua,339.49
@@ -302,6 +304,7 @@ fecha,producto,precio
 2023-05-27,galletitas_de_agua,379.25
 2023-05-28,galletitas_de_agua,379.25
 2023-05-29,galletitas_de_agua,379.25
+2023-05-30,galletitas_de_agua,379.25
 2023-02-17,harina_de_trigo,201.75
 2023-02-18,harina_de_trigo,201.75
 2023-02-20,harina_de_trigo,201.75
@@ -403,6 +406,7 @@ fecha,producto,precio
 2023-05-27,harina_de_trigo,0.0
 2023-05-28,harina_de_trigo,0.0
 2023-05-29,harina_de_trigo,0.0
+2023-05-30,harina_de_trigo,0.0
 2023-02-17,harina_de_maiz,221.92
 2023-02-18,harina_de_maiz,221.92
 2023-02-20,harina_de_maiz,221.92
@@ -504,6 +508,7 @@ fecha,producto,precio
 2023-05-27,harina_de_maiz,264.55
 2023-05-28,harina_de_maiz,264.55
 2023-05-29,harina_de_maiz,264.55
+2023-05-30,harina_de_maiz,264.55
 2023-02-17,arroz,199.0
 2023-02-18,arroz,199.0
 2023-02-20,arroz,199.0
@@ -605,6 +610,7 @@ fecha,producto,precio
 2023-05-27,arroz,334.92
 2023-05-28,arroz,334.92
 2023-05-29,arroz,334.92
+2023-05-30,arroz,334.92
 2023-02-17,fideos_secos,344.48
 2023-02-18,fideos_secos,344.48
 2023-02-20,fideos_secos,344.48
@@ -706,6 +712,7 @@ fecha,producto,precio
 2023-05-27,fideos_secos,0.0
 2023-05-28,fideos_secos,0.0
 2023-05-29,fideos_secos,0.0
+2023-05-30,fideos_secos,0.0
 2023-02-17,asado,1599.9
 2023-02-18,asado,1599.9
 2023-02-20,asado,1599.9
@@ -807,6 +814,7 @@ fecha,producto,precio
 2023-05-27,asado,1699.9
 2023-05-28,asado,1699.9
 2023-05-29,asado,1699.9
+2023-05-30,asado,1699.9
 2023-02-17,carnaza_comun,1049.9
 2023-02-18,carnaza_comun,1049.9
 2023-02-20,carnaza_comun,1049.9
@@ -908,6 +916,7 @@ fecha,producto,precio
 2023-05-27,carnaza_comun,1199.9
 2023-05-28,carnaza_comun,1199.9
 2023-05-29,carnaza_comun,1199.9
+2023-05-30,carnaza_comun,1199.9
 2023-02-17,hueso_con_carne,529.9
 2023-02-18,hueso_con_carne,529.9
 2023-02-20,hueso_con_carne,529.9
@@ -1009,6 +1018,7 @@ fecha,producto,precio
 2023-05-27,hueso_con_carne,599.9
 2023-05-28,hueso_con_carne,599.9
 2023-05-29,hueso_con_carne,599.9
+2023-05-30,hueso_con_carne,599.9
 2023-02-17,paleta,1499.9
 2023-02-18,paleta,1499.9
 2023-02-20,paleta,1499.9
@@ -1110,6 +1120,7 @@ fecha,producto,precio
 2023-05-27,paleta,1589.9
 2023-05-28,paleta,1589.9
 2023-05-29,paleta,1589.9
+2023-05-30,paleta,1589.9
 2023-02-17,carne_picada,1349.9
 2023-02-18,carne_picada,1349.9
 2023-02-20,carne_picada,999.9
@@ -1211,6 +1222,7 @@ fecha,producto,precio
 2023-05-27,carne_picada,1249.9
 2023-05-28,carne_picada,1249.9
 2023-05-29,carne_picada,1499.9
+2023-05-30,carne_picada,1499.9
 2023-02-17,nalga,1749.9
 2023-02-18,nalga,1749.9
 2023-02-20,nalga,1749.9
@@ -1312,6 +1324,7 @@ fecha,producto,precio
 2023-05-27,nalga,1889.9
 2023-05-28,nalga,1889.9
 2023-05-29,nalga,1889.9
+2023-05-30,nalga,1889.9
 2023-02-17,higado,299.9
 2023-02-18,higado,299.9
 2023-02-20,higado,299.9
@@ -1413,6 +1426,7 @@ fecha,producto,precio
 2023-05-27,higado,379.9
 2023-05-28,higado,379.9
 2023-05-29,higado,379.9
+2023-05-30,higado,379.9
 2023-02-17,pechito_de_cerdo,999.9
 2023-02-18,pechito_de_cerdo,999.9
 2023-02-20,pechito_de_cerdo,999.9
@@ -1514,6 +1528,7 @@ fecha,producto,precio
 2023-05-27,pechito_de_cerdo,1049.9
 2023-05-28,pechito_de_cerdo,1049.9
 2023-05-29,pechito_de_cerdo,1189.9
+2023-05-30,pechito_de_cerdo,1189.9
 2023-02-17,pollo,415.9
 2023-02-18,pollo,415.9
 2023-02-20,pollo,415.9
@@ -1615,6 +1630,7 @@ fecha,producto,precio
 2023-05-27,pollo,659.9
 2023-05-28,pollo,659.9
 2023-05-29,pollo,659.9
+2023-05-30,pollo,659.9
 2023-02-17,carne_de_pescado,1499.0
 2023-02-18,carne_de_pescado,1499.0
 2023-02-20,carne_de_pescado,1499.0
@@ -1716,6 +1732,7 @@ fecha,producto,precio
 2023-05-27,carne_de_pescado,1699.0
 2023-05-28,carne_de_pescado,1699.0
 2023-05-29,carne_de_pescado,2299.0
+2023-05-30,carne_de_pescado,2299.0
 2023-02-17,mortadela,1185.0
 2023-02-18,mortadela,1185.0
 2023-02-20,mortadela,1480.0
@@ -1817,6 +1834,7 @@ fecha,producto,precio
 2023-05-27,mortadela,1855.0
 2023-05-28,mortadela,1855.0
 2023-05-29,mortadela,1489.0
+2023-05-30,mortadela,1489.0
 2023-02-17,paleta_cocida,1850.0
 2023-02-18,paleta_cocida,1850.0
 2023-02-20,paleta_cocida,1850.0
@@ -1918,6 +1936,7 @@ fecha,producto,precio
 2023-05-27,paleta_cocida,2445.0
 2023-05-28,paleta_cocida,2445.0
 2023-05-29,paleta_cocida,2445.0
+2023-05-30,paleta_cocida,2445.0
 2023-02-17,salchich¢n,1285.0
 2023-02-18,salchich¢n,1285.0
 2023-02-20,salchich¢n,1285.0
@@ -2019,6 +2038,7 @@ fecha,producto,precio
 2023-05-27,salchich¢n,1559.0
 2023-05-28,salchich¢n,1559.0
 2023-05-29,salchich¢n,1325.0
+2023-05-30,salchich¢n,1325.0
 2023-02-17,salame,2660.0
 2023-02-18,salame,2660.0
 2023-02-20,salame,2660.0
@@ -2120,6 +2140,7 @@ fecha,producto,precio
 2023-05-27,salame,4533.33
 2023-05-28,salame,4533.33
 2023-05-29,salame,4533.33
+2023-05-30,salame,4533.33
 2023-02-17,aceite_de_girasol,556.92
 2023-02-18,aceite_de_girasol,556.92
 2023-02-20,aceite_de_girasol,556.92
@@ -2221,6 +2242,7 @@ fecha,producto,precio
 2023-05-27,aceite_de_girasol,623.13
 2023-05-28,aceite_de_girasol,623.13
 2023-05-29,aceite_de_girasol,623.13
+2023-05-30,aceite_de_girasol,623.13
 2023-02-17,margarina_para_cocinar,268.45
 2023-02-18,margarina_para_cocinar,268.45
 2023-02-20,margarina_para_cocinar,268.45
@@ -2322,6 +2344,7 @@ fecha,producto,precio
 2023-05-27,margarina_para_cocinar,317.96
 2023-05-28,margarina_para_cocinar,317.96
 2023-05-29,margarina_para_cocinar,317.96
+2023-05-30,margarina_para_cocinar,317.96
 2023-02-17,leche_fluida,215.28
 2023-02-18,leche_fluida,234.66
 2023-02-20,leche_fluida,234.66
@@ -2423,6 +2446,7 @@ fecha,producto,precio
 2023-05-27,leche_fluida,278.22
 2023-05-28,leche_fluida,278.22
 2023-05-29,leche_fluida,278.22
+2023-05-30,leche_fluida,278.22
 2023-02-17,leche_en_polvo_entera,1439.49
 2023-02-18,leche_en_polvo_entera,1439.49
 2023-02-20,leche_en_polvo_entera,1439.49
@@ -2524,6 +2548,7 @@ fecha,producto,precio
 2023-05-27,leche_en_polvo_entera,1610.64
 2023-05-28,leche_en_polvo_entera,1610.64
 2023-05-29,leche_en_polvo_entera,1610.64
+2023-05-30,leche_en_polvo_entera,1610.64
 2023-02-17,queso_crema,234.87
 2023-02-18,queso_crema,256.01
 2023-02-20,queso_crema,256.01
@@ -2625,6 +2650,7 @@ fecha,producto,precio
 2023-05-27,queso_crema,272.65
 2023-05-28,queso_crema,272.65
 2023-05-29,queso_crema,272.65
+2023-05-30,queso_crema,272.65
 2023-02-17,queso_cuartirolo,1399.0
 2023-02-18,queso_cuartirolo,1399.0
 2023-02-20,queso_cuartirolo,979.0
@@ -2726,6 +2752,7 @@ fecha,producto,precio
 2023-05-27,queso_cuartirolo,1899.0
 2023-05-28,queso_cuartirolo,1899.0
 2023-05-29,queso_cuartirolo,1599.0
+2023-05-30,queso_cuartirolo,1599.0
 2023-02-17,queso_de_rallar,2579.0
 2023-02-18,queso_de_rallar,2579.0
 2023-02-20,queso_de_rallar,2579.0
@@ -2827,6 +2854,7 @@ fecha,producto,precio
 2023-05-27,queso_de_rallar,3199.0
 2023-05-28,queso_de_rallar,3199.0
 2023-05-29,queso_de_rallar,3999.0
+2023-05-30,queso_de_rallar,3999.0
 2023-02-17,manteca,1542.75
 2023-02-18,manteca,1542.75
 2023-02-20,manteca,1542.75
@@ -2928,6 +2956,7 @@ fecha,producto,precio
 2023-05-27,manteca,0.0
 2023-05-28,manteca,0.0
 2023-05-29,manteca,0.0
+2023-05-30,manteca,0.0
 2023-02-17,yogur,218.0
 2023-02-18,yogur,218.0
 2023-02-20,yogur,218.0
@@ -3029,6 +3058,7 @@ fecha,producto,precio
 2023-05-27,yogur,0.0
 2023-05-28,yogur,0.0
 2023-05-29,yogur,0.0
+2023-05-30,yogur,0.0
 2023-02-17,dulce_de_leche,527.02
 2023-02-18,dulce_de_leche,574.45
 2023-02-20,dulce_de_leche,574.45
@@ -3130,6 +3160,7 @@ fecha,producto,precio
 2023-05-27,dulce_de_leche,997.5
 2023-05-28,dulce_de_leche,997.5
 2023-05-29,dulce_de_leche,997.5
+2023-05-30,dulce_de_leche,997.5
 2023-02-17,huevo,1053.0
 2023-02-18,huevo,1053.0
 2023-02-20,huevo,1053.0
@@ -3231,6 +3262,7 @@ fecha,producto,precio
 2023-05-27,huevo,2080.0
 2023-05-28,huevo,2080.0
 2023-05-29,huevo,2080.0
+2023-05-30,huevo,2080.0
 2023-02-17,manzana,499.0
 2023-02-18,manzana,449.0
 2023-02-20,manzana,449.0
@@ -3332,6 +3364,7 @@ fecha,producto,precio
 2023-05-27,manzana,419.0
 2023-05-28,manzana,419.0
 2023-05-29,manzana,419.0
+2023-05-30,manzana,419.0
 2023-02-17,naranja,369.0
 2023-02-18,naranja,399.0
 2023-02-20,naranja,399.0
@@ -3433,6 +3466,7 @@ fecha,producto,precio
 2023-05-27,naranja,419.0
 2023-05-28,naranja,419.0
 2023-05-29,naranja,469.0
+2023-05-30,naranja,469.0
 2023-02-17,banana,299.0
 2023-02-18,banana,299.0
 2023-02-20,banana,299.0
@@ -3534,6 +3568,7 @@ fecha,producto,precio
 2023-05-27,banana,299.0
 2023-05-28,banana,299.0
 2023-05-29,banana,299.0
+2023-05-30,banana,299.0
 2023-02-17,pera,279.0
 2023-02-18,pera,279.0
 2023-02-20,pera,279.0
@@ -3635,6 +3670,7 @@ fecha,producto,precio
 2023-05-27,pera,199.0
 2023-05-28,pera,199.0
 2023-05-29,pera,199.0
+2023-05-30,pera,199.0
 2023-02-17,batata,359.0
 2023-02-18,batata,359.0
 2023-02-20,batata,299.0
@@ -3736,6 +3772,7 @@ fecha,producto,precio
 2023-05-27,batata,849.0
 2023-05-28,batata,849.0
 2023-05-29,batata,849.0
+2023-05-30,batata,849.0
 2023-02-17,papa,239.0
 2023-02-18,papa,239.0
 2023-02-20,papa,319.0
@@ -3837,6 +3874,7 @@ fecha,producto,precio
 2023-05-27,papa,239.0
 2023-05-28,papa,239.0
 2023-05-29,papa,279.0
+2023-05-30,papa,279.0
 2023-02-17,acelga,239.0
 2023-02-18,acelga,239.0
 2023-02-20,acelga,239.0
@@ -3938,6 +3976,7 @@ fecha,producto,precio
 2023-05-27,acelga,199.0
 2023-05-28,acelga,199.0
 2023-05-29,acelga,199.0
+2023-05-30,acelga,199.0
 2023-02-17,cebolla,299.0
 2023-02-18,cebolla,299.0
 2023-02-20,cebolla,299.0
@@ -4039,6 +4078,7 @@ fecha,producto,precio
 2023-05-27,cebolla,189.0
 2023-05-28,cebolla,189.0
 2023-05-29,cebolla,339.0
+2023-05-30,cebolla,199.0
 2023-02-17,choclo,169.0
 2023-02-18,choclo,169.0
 2023-02-20,choclo,199.0
@@ -4140,6 +4180,7 @@ fecha,producto,precio
 2023-05-27,choclo,409.0
 2023-05-28,choclo,409.0
 2023-05-29,choclo,499.0
+2023-05-30,choclo,499.0
 2023-02-17,lechuga,799.0
 2023-02-18,lechuga,749.0
 2023-02-20,lechuga,749.0
@@ -4241,6 +4282,7 @@ fecha,producto,precio
 2023-05-27,lechuga,699.0
 2023-05-28,lechuga,699.0
 2023-05-29,lechuga,699.0
+2023-05-30,lechuga,699.0
 2023-02-17,tomate_perita,399.0
 2023-02-18,tomate_perita,349.0
 2023-02-20,tomate_perita,349.0
@@ -4342,6 +4384,7 @@ fecha,producto,precio
 2023-05-27,tomate_perita,1399.0
 2023-05-28,tomate_perita,1399.0
 2023-05-29,tomate_perita,1399.0
+2023-05-30,tomate_perita,1399.0
 2023-02-17,zanahoria,199.0
 2023-02-18,zanahoria,199.0
 2023-02-20,zanahoria,199.0
@@ -4443,6 +4486,7 @@ fecha,producto,precio
 2023-05-27,zanahoria,299.0
 2023-05-28,zanahoria,299.0
 2023-05-29,zanahoria,299.0
+2023-05-30,zanahoria,299.0
 2023-02-17,zapallo,189.0
 2023-02-18,zapallo,189.0
 2023-02-20,zapallo,189.0
@@ -4544,6 +4588,7 @@ fecha,producto,precio
 2023-05-27,zapallo,149.0
 2023-05-28,zapallo,149.0
 2023-05-29,zapallo,149.0
+2023-05-30,zapallo,149.0
 2023-02-17,tomate_envasado,595.12
 2023-02-18,tomate_envasado,595.12
 2023-02-20,tomate_envasado,595.12
@@ -4645,6 +4690,7 @@ fecha,producto,precio
 2023-05-27,tomate_envasado,665.91
 2023-05-28,tomate_envasado,665.91
 2023-05-29,tomate_envasado,665.91
+2023-05-30,tomate_envasado,665.91
 2023-02-17,arvejas_en_lata,458.04
 2023-02-18,arvejas_en_lata,458.04
 2023-02-20,arvejas_en_lata,458.04
@@ -4746,6 +4792,7 @@ fecha,producto,precio
 2023-05-27,arvejas_en_lata,586.57
 2023-05-28,arvejas_en_lata,586.57
 2023-05-29,arvejas_en_lata,586.57
+2023-05-30,arvejas_en_lata,642.85
 2023-02-17,lentejas_secas,857.92
 2023-02-18,lentejas_secas,986.6
 2023-02-20,lentejas_secas,986.6
@@ -4847,6 +4894,7 @@ fecha,producto,precio
 2023-05-27,lentejas_secas,1894.95
 2023-05-28,lentejas_secas,1894.95
 2023-05-29,lentejas_secas,1894.95
+2023-05-30,lentejas_secas,1894.95
 2023-02-17,azucar,273.0
 2023-02-18,azucar,273.0
 2023-02-20,azucar,273.0
@@ -4948,6 +4996,7 @@ fecha,producto,precio
 2023-05-27,azucar,689.64
 2023-05-28,azucar,689.64
 2023-05-29,azucar,689.64
+2023-05-30,azucar,689.64
 2023-02-17,dulce_de_batata,726.0
 2023-02-18,dulce_de_batata,726.0
 2023-02-20,dulce_de_batata,726.0
@@ -5049,6 +5098,7 @@ fecha,producto,precio
 2023-05-27,dulce_de_batata,753.58
 2023-05-28,dulce_de_batata,753.58
 2023-05-29,dulce_de_batata,753.58
+2023-05-30,dulce_de_batata,753.58
 2023-02-17,mermelada,563.23
 2023-02-18,mermelada,563.23
 2023-02-20,mermelada,563.23
@@ -5150,6 +5200,7 @@ fecha,producto,precio
 2023-05-27,mermelada,748.83
 2023-05-28,mermelada,748.83
 2023-05-29,mermelada,748.83
+2023-05-30,mermelada,748.83
 2023-02-17,sal_fina,306.5
 2023-02-18,sal_fina,306.5
 2023-02-20,sal_fina,306.5
@@ -5251,6 +5302,7 @@ fecha,producto,precio
 2023-05-27,sal_fina,363.5
 2023-05-28,sal_fina,363.5
 2023-05-29,sal_fina,363.5
+2023-05-30,sal_fina,363.5
 2023-02-17,mayonesa,620.63
 2023-02-18,mayonesa,620.63
 2023-02-20,mayonesa,620.63
@@ -5352,6 +5404,7 @@ fecha,producto,precio
 2023-05-27,mayonesa,736.08
 2023-05-28,mayonesa,736.08
 2023-05-29,mayonesa,736.08
+2023-05-30,mayonesa,736.08
 2023-02-17,vinagre,148.47
 2023-02-18,vinagre,174.03
 2023-02-20,vinagre,174.03
@@ -5453,6 +5506,7 @@ fecha,producto,precio
 2023-05-27,vinagre,201.42
 2023-05-28,vinagre,201.42
 2023-05-29,vinagre,201.42
+2023-05-30,vinagre,201.42
 2023-02-17,caldo_concentrado,935.87
 2023-02-18,caldo_concentrado,935.87
 2023-02-20,caldo_concentrado,935.87
@@ -5554,6 +5608,7 @@ fecha,producto,precio
 2023-05-27,caldo_concentrado,0.0
 2023-05-28,caldo_concentrado,0.0
 2023-05-29,caldo_concentrado,0.0
+2023-05-30,caldo_concentrado,0.0
 2023-02-17,gaseosas,87.04
 2023-02-18,gaseosas,87.04
 2023-02-20,gaseosas,87.04
@@ -5655,6 +5710,7 @@ fecha,producto,precio
 2023-05-27,gaseosas,295.9
 2023-05-28,gaseosas,95.48
 2023-05-29,gaseosas,95.48
+2023-05-30,gaseosas,95.48
 2023-02-17,jugos_concentrados,217.73
 2023-02-18,jugos_concentrados,217.73
 2023-02-20,jugos_concentrados,217.73
@@ -5756,6 +5812,7 @@ fecha,producto,precio
 2023-05-27,jugos_concentrados,281.45
 2023-05-28,jugos_concentrados,281.45
 2023-05-29,jugos_concentrados,281.45
+2023-05-30,jugos_concentrados,281.45
 2023-02-17,soda,104.48
 2023-02-18,soda,104.48
 2023-02-20,soda,104.48
@@ -5857,6 +5914,7 @@ fecha,producto,precio
 2023-05-27,soda,127.39
 2023-05-28,soda,127.39
 2023-05-29,soda,127.39
+2023-05-30,soda,127.39
 2023-02-17,cerveza,161.64
 2023-02-18,cerveza,161.64
 2023-02-20,cerveza,161.64
@@ -5958,6 +6016,7 @@ fecha,producto,precio
 2023-05-27,cerveza,430.42
 2023-05-28,cerveza,430.42
 2023-05-29,cerveza,430.42
+2023-05-30,cerveza,430.42
 2023-02-17,vino,440.0
 2023-02-18,vino,440.0
 2023-02-20,vino,440.0
@@ -6059,6 +6118,7 @@ fecha,producto,precio
 2023-05-27,vino,492.72
 2023-05-28,vino,492.72
 2023-05-29,vino,492.72
+2023-05-30,vino,492.72
 2023-02-17,cafe,830.58
 2023-02-18,cafe,830.58
 2023-02-20,cafe,830.58
@@ -6160,6 +6220,7 @@ fecha,producto,precio
 2023-05-27,cafe,862.14
 2023-05-28,cafe,862.14
 2023-05-29,cafe,862.14
+2023-05-30,cafe,862.14
 2023-02-17,yerba,770.85
 2023-02-18,yerba,770.85
 2023-02-20,yerba,770.85
@@ -6261,6 +6322,7 @@ fecha,producto,precio
 2023-05-27,yerba,896.16
 2023-05-28,yerba,896.16
 2023-05-29,yerba,896.16
+2023-05-30,yerba,896.16
 2023-02-17,te_en_saquitos,418.56
 2023-02-18,te_en_saquitos,418.56
 2023-02-20,te_en_saquitos,418.56
@@ -6362,3 +6424,4 @@ fecha,producto,precio
 2023-05-27,te_en_saquitos,434.47
 2023-05-28,te_en_saquitos,434.47
 2023-05-29,te_en_saquitos,434.47
+2023-05-30,te_en_saquitos,434.47
