@@ -10,8 +10,8 @@ import shutil
 from airflow import DAG
 from airflow.decorators import task, dag
 
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators.email_operator import EmailOperator
+from airflow.operators.python import PythonOperator
+from airflow.operators.email import EmailOperator
 
 from certificados_ddbb import ddbb_pass
 
@@ -61,7 +61,7 @@ def kilo(nombre_producto, producto_url, porcion=1):
     try:
         valor = valor[0].get_text()
     except IndexError:
-        listado[nombre] = 0
+        listado.update({nombre: 0})
         print(f"{nombre} IndexError, {listado[nombre]}")
         return None
 
@@ -70,10 +70,10 @@ def kilo(nombre_producto, producto_url, porcion=1):
     if match:
         number = float(match.group(1).replace(".", "").replace(",", "."))
         print(nombre, (number * porcion))
-        listado[nombre] = number * porcion
 
+        listado.update({nombre: number * porcion})
     else:
-        listado[nombre] = 0
+        listado.update({nombre: 0})
         print("No se encontró un número en el string")
 
 
@@ -93,7 +93,7 @@ def unidad(nombre_producto, producto_url):
     try:
         valor = valor[0].get_text()
     except IndexError:
-        listado[nombre] = 0
+        listado.update({nombre: 0})
         print(f"{nombre} IndexError, {listado[nombre]}")
         return None
 
@@ -102,10 +102,10 @@ def unidad(nombre_producto, producto_url):
     if match:
         number = float(match.group(1).replace(".", "").replace(",", "."))
         print(nombre, number)
-        listado[nombre] = number
+        listado.update({nombre: number})
 
     else:
-        listado[nombre] = 0
+        listado.update({nombre: 0})
         print("No se encontró un número en el string")
 
 
@@ -134,7 +134,7 @@ def scrapping(canasta):
                 print("no hay url")
 
         else:
-            canasta.loc[producto, "url_coto"] == "nan"
+            canasta.loc[producto, "url_coto"] = "nan"
             print(producto, "no hay url")
     if "nan" in listado.values():
         print("hay un Nan en el diccionario")
@@ -439,11 +439,7 @@ t3 = PythonOperator(
 t4 = PythonOperator(
     task_id="twitear",
     python_callable=twitear,
-    op_kwargs={
-        "texto1": mensaje_twitter(variacion, max, min)[0],
-        "texto2": mensaje_twitter(variacion, max, min)[1],
-        "texto3": mensaje_twitter(variacion, max, min)[2],
-    },
+    op_kwargs={"texto1": mensaje_twitter(variacion, max, min)},
     dag=dag,
 )
 
