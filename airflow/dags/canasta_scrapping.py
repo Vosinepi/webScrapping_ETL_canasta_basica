@@ -439,7 +439,7 @@ t3 = PythonOperator(
 t4 = PythonOperator(
     task_id="twitear",
     python_callable=twitear,
-    op_kwargs={"texto1": mensaje_twitter(variacion, max, min)},
+    op_kwargs={"mensaje": mensaje_twitter(variacion)},
     dag=dag,
 )
 
@@ -450,9 +450,9 @@ t5 = EmailOperator(
     html_content=f"""
     <h3>La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%</h3>
     <h4>Los productos con mayor aumento al día de hoy son:</h4>
-    <p>{mensaje_twitter(variacion, max, min)[1]}</p>
+    <p>{mensaje_twitter(variacion)[1]}</p>
     <h4>Los productos con mayor reducción de precio al día de hoy son:</h4>
-    <p>{mensaje_twitter(variacion, max, min)[2]}</p>
+    <p>{mensaje_twitter(variacion)[2]}</p>
     """,
     dag=dag,
 )
