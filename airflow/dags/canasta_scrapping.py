@@ -7,11 +7,11 @@ import psycopg2
 import datetime as dt
 from datetime import datetime, timedelta
 import shutil
-from airflow import DAG
-from airflow.decorators import task, dag
+from airflow import DAG  # type: ignore
+from airflow.decorators import task, dag  # type: ignore
 
-from airflow.operators.python import PythonOperator
-from airflow.operators.email import EmailOperator
+from airflow.operators.python import PythonOperator  # type: ignore
+from airflow.operators.email import EmailOperator  # type: ignore
 
 from certificados_ddbb import ddbb_pass, host, user, database
 
@@ -187,7 +187,7 @@ def guardar_csv_excel():
                 df = df.append(
                     pd.DataFrame([row], columns=[desc[0] for desc in cur.description]),
                     ignore_index=True,
-                )
+                )  # type: ignore
                 df["fecha"] = pd.to_datetime(df["fecha"])
                 df = df.sort_values(by="fecha")
 
@@ -464,4 +464,4 @@ t5 = EmailOperator(
 )
 
 
-t0 >> t1 >> t2 >> t3 >> t4 >> t5
+t0 >> t1 >> t2 >> t3 >> t4 >> t5  # type: ignore
