@@ -13,7 +13,7 @@ from airflow.decorators import task, dag
 from airflow.operators.python import PythonOperator
 from airflow.operators.email import EmailOperator
 
-from certificados_ddbb import ddbb_pass
+from certificados_ddbb import ddbb_pass, host, user, database
 
 from bot_twit import (
     variacion,
@@ -43,6 +43,8 @@ canasta = pd.read_csv(
     usecols=["producto", "cantidad_g_ml", "url_coto", "tipo_producto", "porcion"],
 )
 
+index_error = []  # lista de productos que no se encuentran en la pagina web
+
 
 def kilo(nombre_producto, producto_url, porcion=1):
     """
@@ -62,6 +64,7 @@ def kilo(nombre_producto, producto_url, porcion=1):
         valor = valor[0].get_text()
     except IndexError:
         listado.update({nombre: 0})
+        index_error.append(nombre)
         print(f"{nombre} IndexError, {listado[nombre]}")
         return None
 
@@ -94,6 +97,7 @@ def unidad(nombre_producto, producto_url):
         valor = valor[0].get_text()
     except IndexError:
         listado.update({nombre: 0})
+        index_error.append(nombre)
         print(f"{nombre} IndexError, {listado[nombre]}")
         return None
 
@@ -238,9 +242,9 @@ def cargar_dddb_cloud(datos):
     # Conexión a la base de datos
 
     conn = psycopg2.connect(
-        host="canasta-2.crdqtsbdpist.us-east-2.rds.amazonaws.com",
-        database="postgres",
-        user="postgres",
+        host=host,
+        database=database,
+        user=user,
         password=ddbb_pass,
     )
 
@@ -453,6 +457,8 @@ t5 = EmailOperator(
     <p>{mensaje_twitter(variacion)[1]}</p>
     <h4>Los productos con mayor reducción de precio al día de hoy son:</h4>
     <p>{mensaje_twitter(variacion)[2]}</p>
+    <h4>Los productos que no se encuetran en la pagina hoy son:</h4>
+    <p>{index_error}</p>
     """,
     dag=dag,
 )
