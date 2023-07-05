@@ -4,8 +4,22 @@ certificado/
 logs/
 pgdata/
 backup/
+
+# Ignorar archivos de caché
 __pycache__/
-__init__.py
+*.py[cod]
+
+# Ignorar archivos de registro
+*.log
+
+# Ignorar archivos de configuración local
+.env
+
+# Ignorar archivos generados por el IDE
+.idea/
+.vscode/
+*.pyc
+
 certificados_ddbb.py
 certificados_twitter.py
 robot-yami.py
