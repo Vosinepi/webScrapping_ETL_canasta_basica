@@ -8,7 +8,7 @@ import datetime as dt
 from datetime import datetime, timedelta
 
 
-from certificados_ddbb import ddbb_pass
+from certificados_ddbb import ddbb_pass, host, database, user
 
 
 listado = {"fecha": dt.datetime.now().strftime("%Y-%m-%d")}
@@ -141,9 +141,9 @@ def cargar_dddb_cloud(datos):
     # Conexión a la base de datos
 
     conn = psycopg2.connect(
-        host="canasta-2.crdqtsbdpist.us-east-2.rds.amazonaws.com",
-        database="postgres",
-        user="postgres",
+        host=host,
+        database=database,
+        user=user,
         password=ddbb_pass,
     )
 

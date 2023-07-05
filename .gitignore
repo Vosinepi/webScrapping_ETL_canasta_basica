@@ -1,12 +1,14 @@
 #directorios ignorados
-airflow/
 venv/
 certificado/
 logs/
 pgdata/
+backup/
+__pycache__/
+__init__.py
 certificados_ddbb.py
 certificados_twitter.py
-
 robot-yami.py
-backup/
-scripts/
+
+
+
