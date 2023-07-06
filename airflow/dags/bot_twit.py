@@ -105,8 +105,6 @@ def limpio_precios(primer_dia_mes, fecha_actual):
         fecha_actual = fecha_actual[
             fecha_actual["producto"].isin(primer_dia_mes.loc[~mask4, "producto"])
         ]
-        print(f"Productos sin precio: {fecha_actual.loc[mask1, 'producto'].tolist()}")
-        print(f"Productos sin precio: {primer_dia_mes.loc[mask3, 'producto'].tolist()}")
 
         # Restablecer los índices
         primer_dia_mes.reset_index(drop=True, inplace=True)
@@ -181,6 +179,7 @@ def productos_mas_variacion(limpio_precios):
 # creo el mensaje de twiter
 def mensaje_twitter(variacion):
     # obtengo los productos con mas y menor variacion
+    no_disponible = ""
 
     try:
         productos_con_variaciones = productos_mas_variacion(
@@ -188,6 +187,19 @@ def mensaje_twitter(variacion):
         )
         max = productos_con_variaciones[0]
         min = productos_con_variaciones[1]
+
+        # productos con precio cero o no disponibles
+        productos = precios(lista_larga)[1]
+        if isinstance(productos, pd.DataFrame):
+            productos_no_disponibles = productos.loc[
+                productos["precio"] == 0, "producto"
+            ].tolist()
+            no_disponible = ", ".join(productos_no_disponibles)
+            print(f"Los productos sin precio son: {no_disponible}")
+        else:
+            productos_no_disponibles = []
+            no_disponible = f"No hay productos sin precios el dia {dt.datetime.now().day} de {nombre_mes}"
+            print(no_disponible)
 
         # saco los guines bajos de los nombres de los productos
         max = {k.replace("_", " "): v for k, v in max.items()}
@@ -204,55 +216,71 @@ def mensaje_twitter(variacion):
         mensaje_max = None
         mensaje_min = None
 
-        return mensaje, mensaje_max, mensaje_min
+        return mensaje, mensaje_max, mensaje_min, no_disponible
 
     # si es fin de mes y hay precios del dia actual
     elif es_fin_de_mes:
         mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} es del {variacion}%"
         mensaje_max = f"Los productos con mayor variación del mes de {nombre_mes} son: "
-        mensaje_max += ", ".join(
-            [
-                f"\n{variacion:.2f}% para {producto}"
-                for producto, variacion in max.items()
-            ]
+        mensaje_max += (
+            ", ".join(
+                [
+                    f"\n{variacion:.2f}% para {producto}"
+                    for producto, variacion in max.items()
+                ]
+            )
+            if max is not None
+            else mensaje_max + " No items found."
         )
         mensaje_min = (
             f"Los productos que más redujeron su precio en el mes de {nombre_mes} son: "
         )
-        mensaje_min += ", ".join(
-            [
-                f"\n{variacion:.2f}% para {producto}"
-                for producto, variacion in min.items()
-            ]
+        mensaje_min += (
+            ", ".join(
+                [
+                    f"\n{variacion:.2f}% para {producto}"
+                    for producto, variacion in min.items()
+                ]
+            )
+            if min is not None
+            else mensaje_min + " No items found."
         )
 
-        return mensaje, mensaje_max, mensaje_min
+        return mensaje, mensaje_max, mensaje_min, no_disponible
 
     # si no es fin de mes y hay precios del dia actual
     else:
         mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%"
         mensaje_max = f"Los productos con mayor aumento de {nombre_mes} al día de hoy {dt.datetime.now().day} son:"
-        mensaje_max += ", ".join(
-            [
-                f"\n{variacion:.2f}% para {producto}"
-                for producto, variacion in max.items()
-            ]
+        mensaje_max += (
+            ", ".join(
+                [
+                    f"\n{variacion:.2f}% para {producto}"
+                    for producto, variacion in max.items()
+                ]
+            )
+            if max is not None
+            else mensaje_max + " No items found."
         )
         mensaje_min = f"Los productos con mayor reducción de precio en el mes de {nombre_mes} al día de hoy {dt.datetime.now().day} son:"
-        mensaje_min += ", ".join(
-            [
-                f"\n{variacion:.2f}% para {producto}"
-                for producto, variacion in min.items()
-            ]
+        mensaje_min += (
+            ", ".join(
+                [
+                    f"\n{variacion:.2f}% para {producto}"
+                    for producto, variacion in min.items()
+                ]
+            )
+            if min is not None
+            else mensaje_min + " No items found."
         )
 
-        return mensaje, mensaje_max, mensaje_min
+        return mensaje, mensaje_max, mensaje_min, no_disponible
 
 
 # twitteo la variacion de precios
 def twitear(mensaje):
     mensajes = mensaje
-    Variable.set("enviado", True)
+    # Variable.set("enviado", True)
     client = tweepy.Client(
         consumer_key=api_key,
         consumer_secret=api_secret_key,

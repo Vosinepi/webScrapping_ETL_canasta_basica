@@ -458,7 +458,7 @@ t5 = EmailOperator(
     <h4>Los productos con mayor reducción de precio al día de hoy son:</h4>
     <p>{mensaje_twitter(variacion)[2]}</p>
     <h4>Los productos que no se encuetran en la pagina hoy son:</h4>
-    <p>{index_error}</p>
+    <p>{mensaje_twitter(variacion)[3]}</p>
     """,
     dag=dag,
 )
