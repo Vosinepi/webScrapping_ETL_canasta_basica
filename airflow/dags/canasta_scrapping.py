@@ -39,7 +39,7 @@ tabla = {
 canasta = pd.read_csv(
     "/opt/airflow/data/listado canasta basica.csv",
     sep=";",
-    encoding="latin-1",
+    encoding="utf-8",
     usecols=["producto", "cantidad_g_ml", "url_coto", "tipo_producto", "porcion"],
 )
 
@@ -393,7 +393,7 @@ def task_scrapping():
 dag = DAG(
     dag_id="canasta_dag",
     description="DAG para scrapping de canasta familiar",
-    schedule_interval="30 11 * * *",
+    schedule_interval="30 14 * * *",
     default_args={
         "owner": "airflow",
         "retries": 1,
@@ -424,7 +424,7 @@ t1 = PythonOperator(
 t2 = EmailOperator(
     task_id="send_email",
     to="ismaelpiovani@gmail.com",
-    subject="Airflow tarea canasta completada",
+    subject="Airflow backup tarea canasta completada",
     html_content=""" <h3>Tareas completas</h3> """,
     dag=dag,
 )

@@ -12,50 +12,40 @@ from airflow.models import Variable
 
 # Credenciales de Twitter
 from certificados_twitter import api_key, api_secret_key, access_token, secret_token
+from variacion_perso import variacion_personalizada, lista_variacion
 
+from fechas import (
+    fecha_actual,
+    fecha,
+    primer_dia_mes_actual,
+    primer_dia_siguiente_mes,
+    ultimo_dia_mes_actual,
+    es_fin_de_mes,
+    primer_dia,
+    nombre_mes,
+    semana_del_año,
+    primer_dia_semana_actual,
+    primer_dia_semana_pasada,
+    ultimo_dia_semana_pasada,
+)
+
+primer_dia_semana = primer_dia_semana_actual == dt.datetime.now().strftime("%Y-%m-%d")
 # fechas variables
-fecha_actual = dt.datetime.now()
-fecha = dt.datetime.now().strftime("%Y-%m-%d")
-
-print(fecha)
-primer_dia_mes_actual = dt.datetime.now().replace(day=1).strftime("%Y-%m-%d")
-
 
 # fin de mes
 
-primer_dia_siguiente_mes = dt.date(fecha_actual.year, fecha_actual.month + 1, 1)
 print(primer_dia_siguiente_mes)
-ultimo_dia_mes_actual = primer_dia_siguiente_mes - dt.timedelta(days=1)
+
 print(ultimo_dia_mes_actual)
 # Verificar si el día actual es el último día del mes
-es_fin_de_mes = fecha == ultimo_dia_mes_actual.strftime("%Y-%m-%d")
-print(fecha)
+
+
 print(es_fin_de_mes)
 
 # primero de mes
-primer_dia = fecha == primer_dia_mes_actual
+
 print(primer_dia)
 
-
-# nombre del mes en español
-
-
-meses = {
-    "January": "Enero",
-    "February": "Febrero",
-    "March": "Marzo",
-    "April": "Abril",
-    "May": "Mayo",
-    "June": "Junio",
-    "July": "Julio",
-    "August": "Agosto",
-    "September": "Septiembre",
-    "October": "Octubre",
-    "November": "Noviembre",
-    "December": "Diciembre",
-}
-
-nombre_mes = meses[dt.datetime.now().strftime("%B")]
 print(nombre_mes)
 
 # cargamos el csv de precios
@@ -125,7 +115,7 @@ def variacion_precios(precios_limpios):
         # calculo la variación
 
         variacion = round((precio_actual / precio_anterior - 1) * 100, 2)
-        print(f"La variacion es {variacion}\n")
+        # print(f"La variacion es {variacion}\n")
         return variacion
 
 
@@ -169,11 +159,6 @@ def productos_mas_variacion(limpio_precios):
     )
 
     return mas_variacion, menor_variacion
-
-
-# productos_mas_variacion(
-#     limpio_precios(precios(lista_larga)[0], precios(lista_larga)[1])
-# )
 
 
 # creo el mensaje de twiter
@@ -289,16 +274,23 @@ def twitear(mensaje):
     )
     try:
         if precios(lista_larga)[0] is False:
-            client.create_tweet(text=mensajes[0])
+            # client.create_tweet(text=mensajes[0])
             print(mensajes[0])
         elif primer_dia:
-            client.create_tweet(text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
+            # client.create_tweet(text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
             print("Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
+        elif primer_dia_semana:
+            variacion_semana = variacion_personalizada(
+                primer_dia_semana_pasada, ultimo_dia_semana_pasada
+            )
+            mensaje_var_semanal = f"La variación de precios de la canasta básica la semana pasada en el mes de {nombre_mes} fue de {variacion_semana}%"
+            print(mensaje_var_semanal)
+            # client.create_tweet(text=mensaje_var_semanal)
 
         else:
-            client.create_tweet(text=mensajes[0])
-            client.create_tweet(text=mensajes[1])
-            client.create_tweet(text=mensajes[2])
+            # client.create_tweet(text=mensajes[0])
+            # client.create_tweet(text=mensajes[1])
+            # client.create_tweet(text=mensajes[2])
 
             print(mensajes[0])
             print(mensajes[1])
@@ -309,7 +301,7 @@ def twitear(mensaje):
 
 # twiteo con tweepy
 
-# twitear(mensaje_twitter(variacion))
+twitear(mensaje_twitter(variacion))
 
 # dag = DAG(
 #     dag_id="02_bot_twitter_canasta_basica",

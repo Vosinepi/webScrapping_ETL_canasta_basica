@@ -4,7 +4,7 @@ certificado/
 logs/
 pgdata/
 backup/
-
+cloud_canasta/
 # Ignorar archivos de caché
 __pycache__/
 *.py[cod]
