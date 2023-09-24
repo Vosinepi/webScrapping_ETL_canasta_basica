@@ -15,15 +15,18 @@ from airflow.operators.email import EmailOperator  # type: ignore
 
 from certificados_ddbb import ddbb_pass, host, user, database
 
+from variacion_perso import variacion_personalizada, lista_variacion, lista_larga
+
+from fechas import (
+    fecha,
+    primer_dia_mes_actual,
+    nombre_mes,
+)
+
 from bot_twit import (
-    variacion,
-    productos_mas_variacion,
     twitear,
     mensaje_twitter,
-    limpio_precios,
-    precios,
-    lista_larga,
-    nombre_mes,
+    check_execution_status,
 )
 
 listado = {
@@ -42,6 +45,8 @@ canasta = pd.read_csv(
     encoding="utf-8",
     usecols=["producto", "cantidad_g_ml", "url_coto", "tipo_producto", "porcion"],
 )
+
+variacion = variacion_personalizada(primer_dia_mes_actual, fecha)
 
 index_error = []  # lista de productos que no se encuentran en la pagina web
 
@@ -431,19 +436,15 @@ t2 = EmailOperator(
 
 t3 = PythonOperator(
     task_id="productos_variacion",
-    python_callable=productos_mas_variacion,
-    op_kwargs={
-        "limpio_precios": limpio_precios(
-            precios(lista_larga)[0], precios(lista_larga)[1]
-        )
-    },
+    python_callable=lista_variacion,
+    op_kwargs={"dia1": primer_dia_mes_actual, "dia2": fecha, "cantidad": 4},
     dag=dag,
 )
 
 t4 = PythonOperator(
     task_id="twitear",
     python_callable=twitear,
-    op_kwargs={"mensaje": mensaje_twitter(variacion)},
+    op_kwargs={"lista_cantidad": 4, "dia1": primer_dia_mes_actual, "dia2": fecha},
     dag=dag,
 )
 
@@ -454,11 +455,12 @@ t5 = EmailOperator(
     html_content=f"""
     <h3>La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%</h3>
     <h4>Los productos con mayor aumento al día de hoy son:</h4>
-    <p>{mensaje_twitter(variacion)[1]}</p>
+    <p>{mensaje_twitter(4, primer_dia_mes_actual, fecha)[1]}</p>
     <h4>Los productos con mayor reducción de precio al día de hoy son:</h4>
-    <p>{mensaje_twitter(variacion)[2]}</p>
+    <p>{mensaje_twitter(4, primer_dia_mes_actual, fecha)[2]}</p>
     <h4>Los productos que no se encuetran en la pagina hoy son:</h4>
-    <p>{mensaje_twitter(variacion)[3]}</p>
+    <p>{mensaje_twitter(4, primer_dia_mes_actual, fecha)[3]}</p>
+    <h4>La variable de chequeo de twit es:{check_execution_status()}</h4>
     """,
     dag=dag,
 )

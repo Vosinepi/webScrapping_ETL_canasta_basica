@@ -12,7 +12,12 @@ from airflow.models import Variable
 
 # Credenciales de Twitter
 from certificados_twitter import api_key, api_secret_key, access_token, secret_token
-from variacion_perso import variacion_personalizada, lista_variacion
+from variacion_perso import (
+    variacion_personalizada,
+    lista_variacion,
+    precios,
+    lista_larga,
+)
 
 from fechas import (
     fecha_actual,
@@ -29,152 +34,65 @@ from fechas import (
     ultimo_dia_semana_pasada,
 )
 
-primer_dia_semana = primer_dia_semana_actual == dt.datetime.now().strftime("%Y-%m-%d")
 # fechas variables
+primer_dia_semana = primer_dia_semana_actual == dt.datetime.now().strftime("%Y-%m-%d")
 
 # fin de mes
-
 print(primer_dia_siguiente_mes)
 
 print(ultimo_dia_mes_actual)
+
 # Verificar si el día actual es el último día del mes
-
-
 print(es_fin_de_mes)
 
 # primero de mes
-
 print(primer_dia)
-
 print(nombre_mes)
 
-# cargamos el csv de precios
-try:
-    lista_larga = pd.read_csv("/opt/airflow/data/precios_lista_larga.csv")
-except:
-    lista_larga = pd.read_csv(
-        r"C:\codeo_juego\scrapping_coto_canasta_basica\airflow\data\precios_lista_larga.csv"
-    )
 
+# chequeo si ya se envio twit hoy
+def check_execution_status():
+    """
+    La función comprueba si una tarea ya se ha ejecutado hoy y devuelve True si puede continuar
+    ejecutándose o False si debe interrumpirse.
+    :return: un valor booleano. Si la tarea ya se ejecutó hoy, devuelve False. De lo contrario, devuelve
+    Verdadero.
+    """
+    twit_executed_today = Variable.get("task_executed_today", default_var=None)
 
-# precios del primer dia del mes actual y del dia actual
-def precios(lista):
-    # Precios del primer día del mes actual
-    if fecha == lista["fecha"].max():
-        precios_primer_dia_mes_actual = lista_larga[
-            lista_larga["fecha"] == primer_dia_mes_actual
-        ]
+    if twit_executed_today == fecha:
+        return False  # La tarea ya se ha ejecutado hoy, se lanza la excepción.
 
-        # precios del dia actual
-        precios_dia_actual = lista_larga[lista_larga["fecha"] == fecha]
-        return precios_primer_dia_mes_actual, precios_dia_actual
-
-    else:
-        print("No hay precios del dia actual")
-        return False, False
-
-
-# limpio los precios
-def limpio_precios(primer_dia_mes, fecha_actual):
-    if primer_dia_mes is False or fecha_actual is False:
-        print("No hay precios del dia actual")
-        return False, False
-    else:
-        mask1 = fecha_actual["precio"] == 0
-        mask2 = fecha_actual.groupby("producto")["precio"].transform("first") == 0
-        mask3 = primer_dia_mes["precio"] == 0
-        mask4 = primer_dia_mes.groupby("producto")["precio"].transform("first") == 0
-
-        # Eliminar los productos sin precio
-        primer_dia_mes = primer_dia_mes[primer_dia_mes["precio"] != 0]
-        primer_dia_mes = primer_dia_mes[
-            primer_dia_mes["producto"].isin(fecha_actual.loc[~mask2, "producto"])
-        ]
-
-        fecha_actual = fecha_actual[fecha_actual["precio"] != 0]
-        fecha_actual = fecha_actual[
-            fecha_actual["producto"].isin(primer_dia_mes.loc[~mask4, "producto"])
-        ]
-
-        # Restablecer los índices
-        primer_dia_mes.reset_index(drop=True, inplace=True)
-        fecha_actual.reset_index(drop=True, inplace=True)
-
-        return primer_dia_mes, fecha_actual
-
-
-# saco la variacion de precios mensual al dia de la fecha
-def variacion_precios(precios_limpios):
-    if precios_limpios[0] is False or precios_limpios[1] is False:
-        print("No hay precios del dia actual")
-        return False
-    else:
-        precio_anterior = sum(precios_limpios[0]["precio"])
-        precio_actual = sum(precios_limpios[1]["precio"])
-
-        # calculo la variación
-
-        variacion = round((precio_actual / precio_anterior - 1) * 100, 2)
-        # print(f"La variacion es {variacion}\n")
-        return variacion
-
-
-variacion = variacion_precios(
-    limpio_precios(precios(lista_larga)[0], precios(lista_larga)[1])
-)
-
-
-# obtengo los 4 productos con mas variacion de precios
-def productos_mas_variacion(limpio_precios):
-    precios_primer_dia_mes_actual = limpio_precios[0]
-
-    precios_dia_actual = limpio_precios[1]
-
-    # calculo la variacion de precios
-    precios_primer_dia_mes_actual["variacion"] = (
-        precios_dia_actual["precio"] / precios_primer_dia_mes_actual["precio"] - 1
-    ) * 100
-
-    # ordeno los productos por variacion
-    precios_primer_dia_mes_actual.sort_values(
-        by=["variacion"], ascending=False, inplace=True
-    )
-
-    # me quedo con los 4 productos con mas variacion
-    productos_mas_variacion = precios_primer_dia_mes_actual.head(4)
-    productos_menor_variacion = precios_primer_dia_mes_actual.tail(4)
-
-    # armo diccionarios con los productos y sus variaciones
-    mas_variacion = dict(
-        zip(
-            productos_mas_variacion["producto"],
-            round(productos_mas_variacion["variacion"], 2),
-        )
-    )
-    menor_variacion = dict(
-        zip(
-            productos_menor_variacion["producto"],
-            round(productos_menor_variacion["variacion"], 2),
-        )
-    )
-
-    return mas_variacion, menor_variacion
+    return True  # La tarea puede continuar ejecutándose.
 
 
 # creo el mensaje de twiter
-def mensaje_twitter(variacion):
+def mensaje_twitter(lista_cantidad, dia1, dia2):
+    """
+    La función `mensaje_twitter` genera un mensaje de Twitter con información sobre las variaciones de
+    precio en un período de tiempo determinado para una lista de productos.
+
+    :param lista_cantidad: Define cuantos productos se van a imprimir en el mensaje de Twitter.
+    :param dia1: El parámetro "dia1" representa el primer día para el cual se desea calcular la
+    variación de precios. Debe ser una fecha específica en el formato "AAAA-MM-DD"
+    :param dia2: El parámetro "dia2" representa el segundo día para el cual se desea calcular la
+    variación de precios. Se utiliza en la función "mensaje_twitter" para calcular la variación entre
+    "dia1" y "dia2" y generar los mensajes correspondientes
+    :return: The function `mensaje_twitter` returns four values: `mensaje`, `mensaje_max`,
+    `mensaje_min`, and `no_disponible`.
+    """
+    variacion = variacion_personalizada(dia1, dia2)
+    lista = lista_variacion(dia1, dia2, lista_cantidad)
+
     # obtengo los productos con mas y menor variacion
     no_disponible = ""
 
     try:
-        productos_con_variaciones = productos_mas_variacion(
-            limpio_precios(precios(lista_larga)[0], precios(lista_larga)[1])
-        )
-        max = productos_con_variaciones[0]
-        min = productos_con_variaciones[1]
+        max = lista[0]
+        min = lista[1]
 
         # productos con precio cero o no disponibles
-        productos = precios(lista_larga)[1]
+        productos = precios(lista_larga, dia1, dia2)[1]
         if isinstance(productos, pd.DataFrame):
             productos_no_disponibles = productos.loc[
                 productos["precio"] == 0, "producto"
@@ -196,7 +114,7 @@ def mensaje_twitter(variacion):
         min = None
 
     # si no hay precios del dia actual
-    if precios(lista_larga)[0] is False:
+    if precios(lista_larga, dia1, dia2)[0] is False:
         mensaje = f"No hay precios del dia {dt.datetime.now().day} de {nombre_mes}"
         mensaje_max = None
         mensaje_min = None
@@ -263,97 +181,58 @@ def mensaje_twitter(variacion):
 
 
 # twitteo la variacion de precios
-def twitear(mensaje):
-    mensajes = mensaje
-    # Variable.set("enviado", True)
+def twitear(lista_cantidad, dia1, dia2):
+    """
+    La función `twitear` envía tweets según los parámetros y condiciones dados.
+
+    :param lista_cantidad: Parametro que pasa a la funcion `mensaje_twitter` para definir cuantos productos se van a imprimir en el mensaje de Twitter.
+    :param dia1: El parámetro "dia1" representa el primer día para el cual se desea calcular la variación de precios. Debe ser una fecha específica en el formato "AAAA-MM-DD"
+    :param dia2: El parámetro "dia2" representa el segundo día para el cual se desea calcular la variación de precios. Se utiliza en la función "mensaje_twitter" para calcular la variación entre "dia1" y "dia2" y generar los mensajes correspondientes
+
+    """
+    mensajes = mensaje_twitter(lista_cantidad, dia1, dia2)
+
     client = tweepy.Client(
         consumer_key=api_key,
         consumer_secret=api_secret_key,
         access_token=access_token,
         access_token_secret=secret_token,
     )
-    try:
-        if precios(lista_larga)[0] is False:
-            # client.create_tweet(text=mensajes[0])
-            print(mensajes[0])
-        elif primer_dia:
-            # client.create_tweet(text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
-            print("Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
-        elif primer_dia_semana:
-            variacion_semana = variacion_personalizada(
-                primer_dia_semana_pasada, ultimo_dia_semana_pasada
-            )
-            mensaje_var_semanal = f"La variación de precios de la canasta básica la semana pasada en el mes de {nombre_mes} fue de {variacion_semana}%"
-            print(mensaje_var_semanal)
-            # client.create_tweet(text=mensaje_var_semanal)
+    if check_execution_status():
+        try:
+            if precios(lista_larga, dia1, dia2)[0] is False:
+                client.create_tweet(text=mensajes[0])
+                print(mensajes[0])
+            elif primer_dia:
+                client.create_tweet(
+                    text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞"
+                )
+                print("Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
+            else:
+                if primer_dia_semana:
+                    variacion_semana = variacion_personalizada(
+                        primer_dia_semana_pasada, ultimo_dia_semana_pasada
+                    )
+                    mensaje_var_semanal = f"La variación de precios de la canasta básica la semana pasada en el mes de {nombre_mes} fue de {variacion_semana}%"
+                    print(mensaje_var_semanal)
+                    # client.create_tweet(text=mensaje_var_semanal)
 
-        else:
-            # client.create_tweet(text=mensajes[0])
-            # client.create_tweet(text=mensajes[1])
-            # client.create_tweet(text=mensajes[2])
+                client.create_tweet(text=mensajes[0])
+                client.create_tweet(text=mensajes[1])
+                client.create_tweet(text=mensajes[2])
 
-            print(mensajes[0])
-            print(mensajes[1])
-            print(mensajes[2])
-    except:
-        print("Ya twitee hoy")
+                print(mensajes[0])
+                print(mensajes[1])
+                print(mensajes[2])
+
+        except tweepy.TweepyException as e:
+            print(e)
+            print("Ya twitee hoy")
+        Variable.set("twit_executed_today", fecha)
+    else:
+        print("Ya twitee hoy, False la variable de chequeo")
 
 
 # twiteo con tweepy
 
-twitear(mensaje_twitter(variacion))
-
-# dag = DAG(
-#     dag_id="02_bot_twitter_canasta_basica",
-#     description="Bot Twitter Canasta Básica",
-#     schedule_interval="30 12 * * *",
-#     default_args={
-#         "owner": "airflow",
-#         "retries": 1,
-#         "retry_delay": timedelta(minutes=20),
-#         "start_date": datetime(2023, 3, 16),
-#         "email": ["ismaelpiovani@gmail.com"],
-#         "email_on_failure": True,
-#         "email_on_retry": True,
-#     },
-#     catchup=False,
-# )
-
-# t0 = PythonOperator(
-#     task_id="productos_mas_variacion",
-#     python_callable=productos_mas_variacion,
-#     op_kwargs={"limpio_precios": limpio_precios},
-#     dag=dag,
-# )
-
-# t1 = PythonOperator(
-#     task_id="mensaje_twitter",
-#     python_callable=mensaje_twitter,
-#     op_kwargs={"variacion": variacion, "max": max, "min": min},
-#     dag=dag,
-# )
-
-# t2 = PythonOperator(
-#     task_id="twitear",
-#     python_callable=twitear,
-#     op_kwargs={
-#         "texto1": mensaje_twitter(variacion, max, min)[0],
-#         "texto2": mensaje_twitter(variacion, max, min)[1],
-#         "texto3": mensaje_twitter(variacion, max, min)[2],
-#     },
-#     dag=dag,
-# )
-
-# t3 = EmailOperator(
-#     task_id="email",
-#     to="ismaelpiovani@gmail.com",
-#     subject="Bot_twitter_canasta_basica",
-#     html_content=f"""
-#     <h3>La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%</h3>
-#     <h4>Los precios con mayor aumento al día de hoy son:</h4>
-#     <p>{mensaje_twitter(variacion, max, min)[1]}</p>
-#     <h4>Los precios con mayor reducción de precio al día de hoy son:</h4>
-#     <p>{mensaje_twitter(variacion, max, min)[2]}</p>
-#     """,
-#     dag=dag,
-# )
+# twitear(lista_cantidad=4, dia1=primer_dia_mes_actual, dia2=fecha)

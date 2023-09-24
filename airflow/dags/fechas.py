@@ -4,7 +4,7 @@ import datetime as dt
 fecha_actual = dt.datetime.now()
 fecha = dt.datetime.now().strftime("%Y-%m-%d")
 
-
+# Primer dia del mes actual
 primer_dia_mes_actual = dt.datetime.now().replace(day=1).strftime("%Y-%m-%d")
 
 # semana del mes
@@ -15,6 +15,7 @@ primer_dia_siguiente_mes = dt.date(fecha_actual.year, fecha_actual.month + 1, 1)
 print(primer_dia_siguiente_mes)
 ultimo_dia_mes_actual = primer_dia_siguiente_mes - dt.timedelta(days=1)
 print(ultimo_dia_mes_actual)
+
 # Verificar si el día actual es el último día del mes
 es_fin_de_mes = fecha == ultimo_dia_mes_actual.strftime("%Y-%m-%d")
 
@@ -44,8 +45,6 @@ ultimo_dia_semana_pasada = ultimo_dia_semana_pasada.strftime("%Y-%m-%d")
 print(f"Último día de la semana pasada: {ultimo_dia_semana_pasada}")
 
 # nombre del mes en español
-
-
 meses = {
     "January": "Enero",
     "February": "Febrero",
