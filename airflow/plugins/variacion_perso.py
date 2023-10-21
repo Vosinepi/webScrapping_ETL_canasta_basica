@@ -132,8 +132,9 @@ def variacion_precios(precios_limpios):
     """
     if precios_limpios[0] is False or precios_limpios[1] is False:
         print("No hay precios del dia actual en variacion precios")
-        variacion_no_precios = "Non hay variacion por que no hay precios"
-        return variacion_no_precios
+        variacion = "No hay variacion por que no hay precios"
+        promedio_precio = "No hay variacion por que no hay precios"
+        return variacion, promedio_precio
     else:
         precio_anterior = sum(precios_limpios[0]["precio"])
         precio_actual = sum(precios_limpios[1]["precio"])
@@ -142,6 +143,7 @@ def variacion_precios(precios_limpios):
 
         variacion = round((precio_actual / precio_anterior - 1) * 100, 2)
         promedio_precio = round((precio_actual + precio_anterior) / 2, 2)
+
         # print(f"La variacion es {variacion}\n")
         return variacion, promedio_precio
 
