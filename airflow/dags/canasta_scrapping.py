@@ -1,20 +1,25 @@
 import requests as req
 import pandas as pd
-import tweepy
 from bs4 import BeautifulSoup
 import re
 import psycopg2
 import datetime as dt
 from datetime import datetime, timedelta
 import shutil
+import sys
+import os
+
 from airflow import DAG  # type: ignore
 from airflow.decorators import task, dag  # type: ignore
 
 from airflow.operators.python import PythonOperator  # type: ignore
 from airflow.operators.email import EmailOperator  # type: ignore
 
-from certificados_ddbb import ddbb_pass, host, user, database
+# Agregar la carpeta 'plugins' al PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "plugins")))
 
+# from airflow.dags.certificados_ddbb import ddbb_pass, host, user, database}
+from certificados_ddbb import ddbb_pass, host, user, database
 from variacion_perso import variacion_personalizada, lista_variacion, lista_larga
 
 from fechas import (
@@ -398,7 +403,7 @@ def task_scrapping():
 dag = DAG(
     dag_id="canasta_dag",
     description="DAG para scrapping de canasta familiar",
-    schedule_interval="30 14 * * *",
+    schedule_interval="30 11 * * *",
     default_args={
         "owner": "airflow",
         "retries": 1,
@@ -453,14 +458,14 @@ t5 = EmailOperator(
     to="ismaelpiovani@gmail.com",
     subject="Bot_twitter_canasta_basica",
     html_content=f"""
-    <h3>La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%</h3>
+    <h3>La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion[0]}%</h3>
     <h4>Los productos con mayor aumento al día de hoy son:</h4>
     <p>{mensaje_twitter(4, primer_dia_mes_actual, fecha)[1]}</p>
     <h4>Los productos con mayor reducción de precio al día de hoy son:</h4>
     <p>{mensaje_twitter(4, primer_dia_mes_actual, fecha)[2]}</p>
     <h4>Los productos que no se encuetran en la pagina hoy son:</h4>
     <p>{mensaje_twitter(4, primer_dia_mes_actual, fecha)[3]}</p>
-    <h4>La variable de chequeo de twit es:{check_execution_status()}</h4>
+    <h4>La variable de chequeo de twit es:{check_execution_status(fecha)}</h4>
     """,
     dag=dag,
 )

@@ -1,8 +1,8 @@
 import datetime as dt
 
 
-from variacion_perso import variacion_personalizada, fecha_actual
-from fechas import (
+from airflow.plugins.variacion_perso import variacion_personalizada, fecha_actual
+from airflow.plugins.fechas import (
     semana_del_año,
     primer_dia_semana_actual,
     primer_dia_semana_pasada,

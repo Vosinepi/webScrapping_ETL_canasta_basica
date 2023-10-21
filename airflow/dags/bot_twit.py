@@ -2,6 +2,8 @@ import datetime as dt
 from datetime import datetime, timedelta
 import tweepy
 import pandas as pd
+import sys
+import os
 from airflow.models import Variable
 
 # from airflow import DAG
@@ -9,6 +11,9 @@ from airflow.models import Variable
 
 # from airflow.operators.python_operator import PythonOperator
 # from airflow.operators.email_operator import EmailOperator
+
+# Agregar la carpeta 'plugins' al PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "plugins")))
 
 # Credenciales de Twitter
 from certificados_twitter import api_key, api_secret_key, access_token, secret_token
@@ -35,7 +40,9 @@ from fechas import (
 )
 
 # fechas variables
-primer_dia_semana = primer_dia_semana_actual == dt.datetime.now().strftime("%Y-%m-%d")
+primer_dia_semana = primer_dia_semana_actual.strftime(
+    "%Y-%m-%d"
+) == dt.datetime.now().strftime("%Y-%m-%d")
 
 # fin de mes
 print(primer_dia_siguiente_mes)
@@ -51,14 +58,15 @@ print(nombre_mes)
 
 
 # chequeo si ya se envio twit hoy
-def check_execution_status():
+def check_execution_status(fecha):
+    print(fecha)
     """
     La función comprueba si una tarea ya se ha ejecutado hoy y devuelve True si puede continuar
     ejecutándose o False si debe interrumpirse.
     :return: un valor booleano. Si la tarea ya se ejecutó hoy, devuelve False. De lo contrario, devuelve
     Verdadero.
     """
-    twit_executed_today = Variable.get("task_executed_today", default_var=None)
+    twit_executed_today = Variable.get("twit_executed_today", default_var=None)
 
     if twit_executed_today == fecha:
         return False  # La tarea ya se ha ejecutado hoy, se lanza la excepción.
@@ -101,7 +109,7 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
             print(f"Los productos sin precio son: {no_disponible}")
         else:
             productos_no_disponibles = []
-            no_disponible = f"No hay productos sin precios el dia {dt.datetime.now().day} de {nombre_mes}"
+            no_disponible = f"No hay productos sin precios el dia {dt.datetime.now().day} de {nombre_mes}."
             print(no_disponible)
 
         # saco los guines bajos de los nombres de los productos
@@ -115,7 +123,7 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
 
     # si no hay precios del dia actual
     if precios(lista_larga, dia1, dia2)[0] is False:
-        mensaje = f"No hay precios del dia {dt.datetime.now().day} de {nombre_mes}"
+        mensaje = f"No hay precios del dia {dt.datetime.now().day} de {nombre_mes}."
         mensaje_max = None
         mensaje_min = None
 
@@ -123,7 +131,7 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
 
     # si es fin de mes y hay precios del dia actual
     elif es_fin_de_mes:
-        mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} es del {variacion}%"
+        mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} es del {variacion[0]}%."
         mensaje_max = f"Los productos con mayor variación del mes de {nombre_mes} son: "
         mensaje_max += (
             ", ".join(
@@ -153,7 +161,7 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
 
     # si no es fin de mes y hay precios del dia actual
     else:
-        mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion}%"
+        mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion[0]}%."
         mensaje_max = f"Los productos con mayor aumento de {nombre_mes} al día de hoy {dt.datetime.now().day} son:"
         mensaje_max += (
             ", ".join(
@@ -198,24 +206,48 @@ def twitear(lista_cantidad, dia1, dia2):
         access_token=access_token,
         access_token_secret=secret_token,
     )
-    if check_execution_status():
+    if check_execution_status(fecha):
         try:
             if precios(lista_larga, dia1, dia2)[0] is False:
                 client.create_tweet(text=mensajes[0])
                 print(mensajes[0])
             elif primer_dia:
                 client.create_tweet(
-                    text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞"
+                    text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞."
                 )
-                print("Mes nuevo, precios nuevos!, a cruzar los dedos 🤞")
+                print("Mes nuevo, precios nuevos!, a cruzar los dedos 🤞.")
             else:
                 if primer_dia_semana:
+                    # variacion semana pasada
                     variacion_semana = variacion_personalizada(
-                        primer_dia_semana_pasada, ultimo_dia_semana_pasada
+                        primer_dia_semana_pasada.strftime("%Y-%m-%d"),
+                        ultimo_dia_semana_pasada.strftime("%Y-%m-%d"),
                     )
-                    mensaje_var_semanal = f"La variación de precios de la canasta básica la semana pasada en el mes de {nombre_mes} fue de {variacion_semana}%"
+                    # variacion semana pasada con respecto a la anterior
+                    variacion_semana_anterior = variacion_personalizada(
+                        (primer_dia_semana_pasada - timedelta(weeks=1)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                        (ultimo_dia_semana_pasada - timedelta(weeks=1)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                    )
+                    print(variacion_semana)
+                    print(variacion_semana_anterior)
+                    # variacion con respecto a la semana anterior a la anterior
+                    diferencia_entre_semanas = round(
+                        (variacion_semana[1] / variacion_semana_anterior[1] - 1) * 100,
+                        2,
+                    )
+                    if diferencia_entre_semanas < 0:
+                        bajo_subio = "bajó"
+                    else:
+                        bajo_subio = "subió"
+
+                    # La variación de precios de la canasta básica la semana 39 bajó/subió 1.49% respecto a la semana 38.
+                    mensaje_var_semanal = f"La variación de precios de la canasta básica la semana numero {semana_del_año-1} {bajo_subio} {diferencia_entre_semanas}% con respecto a la semana {semana_del_año-2}."
                     print(mensaje_var_semanal)
-                    # client.create_tweet(text=mensaje_var_semanal)
+                    client.create_tweet(text=mensaje_var_semanal)
 
                 client.create_tweet(text=mensajes[0])
                 client.create_tweet(text=mensajes[1])
@@ -230,7 +262,7 @@ def twitear(lista_cantidad, dia1, dia2):
             print("Ya twitee hoy")
         Variable.set("twit_executed_today", fecha)
     else:
-        print("Ya twitee hoy, False la variable de chequeo")
+        print(f"Ya twitee hoy, {check_execution_status(fecha)} de chequeo")
 
 
 # twiteo con tweepy

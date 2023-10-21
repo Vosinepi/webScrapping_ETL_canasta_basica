@@ -36,12 +36,12 @@ print(f"Primer día de la semana actual: {primer_dia_semana_actual}")
 
 # Obtener la primer fecha de la semana pasada
 primer_dia_semana_pasada = primer_dia_semana_actual - dt.timedelta(weeks=1)
-primer_dia_semana_pasada = primer_dia_semana_pasada.strftime("%Y-%m-%d")
+# primer_dia_semana_pasada = primer_dia_semana_pasada.strftime("%Y-%m-%d")
 print(f"Primer día de la semana pasada: {primer_dia_semana_pasada}")
 
 # Obtener la última fecha de la semana pasada (6 días antes del primer día de la semana actual)
 ultimo_dia_semana_pasada = primer_dia_semana_actual - dt.timedelta(days=1)
-ultimo_dia_semana_pasada = ultimo_dia_semana_pasada.strftime("%Y-%m-%d")
+# ultimo_dia_semana_pasada = ultimo_dia_semana_pasada.strftime("%Y-%m-%d")
 print(f"Último día de la semana pasada: {ultimo_dia_semana_pasada}")
 
 # nombre del mes en español
@@ -62,3 +62,6 @@ meses = {
 
 nombre_mes = meses[dt.datetime.now().strftime("%B")]
 print(nombre_mes)
+print(primer_dia_semana_actual)
+primer_dia_semana = primer_dia_semana_actual == dt.datetime.now()
+print(primer_dia_semana)

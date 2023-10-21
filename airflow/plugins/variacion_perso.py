@@ -69,13 +69,15 @@ def precios(lista, dia1, dia2):
     precios
     :return: two variables: precios_dia1 and precios_dia2.
     """
+
     # Precios del primer día del mes actual
-    if fecha == lista["fecha"].max():
-        precios_dia1 = lista_larga[lista_larga["fecha"] == dia1]
 
-        # precios del dia actual
-        precios_dia2 = lista_larga[lista_larga["fecha"] == dia2]
+    precios_dia1 = lista[lista["fecha"] == dia1]
 
+    # precios del dia actual
+    precios_dia2 = lista[lista["fecha"] == dia2]
+
+    if precios_dia1.empty == False and precios_dia2.empty == False:
         return precios_dia1, precios_dia2
 
     else:
@@ -139,8 +141,9 @@ def variacion_precios(precios_limpios):
         # calculo la variación
 
         variacion = round((precio_actual / precio_anterior - 1) * 100, 2)
+        promedio_precio = round((precio_actual + precio_anterior) / 2, 2)
         # print(f"La variacion es {variacion}\n")
-        return variacion
+        return variacion, promedio_precio
 
 
 def productos_mas_variacion(limpio_precios, cantidad):
@@ -212,12 +215,12 @@ def variacion_personalizada(dia1, dia2):
     precio
     :return: la variable "variación", que representa la variación personalizada de precios.
     """
-    variacion = variacion_precios(
+    variaciones = variacion_precios(
         limpio_precios(
             precios(lista_larga, dia1, dia2)[0], precios(lista_larga, dia1, dia2)[1]
         )
     )
-    return variacion
+    return variaciones
 
 
 def lista_variacion(dia1, dia2, cantidad):
@@ -240,3 +243,39 @@ def lista_variacion(dia1, dia2, cantidad):
         cantidad,
     )
     return lista_variacion
+
+
+def variaciones_semanales(semana1, semana2):
+    # tomamos dos numeros de semana del año y calculamos la variacion de precios de cada una y la diferecia entre ellas.
+    primer_dia_año = dt.date(fecha_actual.year, 1, 1)
+    # fechas de la semana1
+    dias_para_lunes = (7 - primer_dia_año.weekday()) % 7
+    primer_dia_semana1 = primer_dia_año + dt.timedelta(
+        days=dias_para_lunes + (semana1 - 1) * 7
+    )
+    ultimo_dia_semana1 = primer_dia_semana1 + dt.timedelta(days=6)
+
+    # fechas de la semana2
+    primer_dia_semana2 = primer_dia_año + dt.timedelta(
+        days=dias_para_lunes + (semana2 - 1) * 7
+    )
+    ultimo_dia_semana2 = primer_dia_semana2 + dt.timedelta(days=6)
+
+    # calculo la variacion de precios de cada semana
+    variacion_semana1 = variacion_personalizada(
+        primer_dia_semana1.strftime("%Y-%m-%d"), ultimo_dia_semana1.strftime("%Y-%m-%d")
+    )
+    variacion_semana2 = variacion_personalizada(
+        primer_dia_semana2.strftime("%Y-%m-%d"), ultimo_dia_semana2.strftime("%Y-%m-%d")
+    )
+
+    # calculo la diferencia entre las variaciones
+    diferencia = round(
+        (variacion_semana1[1] / variacion_semana2[1] - 1) * 100,
+        2,
+    )
+
+    return variacion_semana1, variacion_semana2, diferencia
+
+
+print(variaciones_semanales(38, 37))
