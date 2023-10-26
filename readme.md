@@ -1,6 +1,6 @@
 ## Iber Ismael Piovani
 
-# Pequeño ETL de Web Scraping utilizando Airflow para automatizar el proceso
+# ETL de Web Scraping utilizando Airflow para automatizar el proceso
 
 ## Data Studio Looker
 
