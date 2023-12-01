@@ -246,8 +246,11 @@ def twitear(lista_cantidad, dia1, dia2):
 
                     # La variación de precios de la canasta básica la semana 39 bajó/subió 1.49% respecto a la semana 38.
                     mensaje_var_semanal = f"La variación de precios de la canasta básica la semana numero {semana_del_año-1} {bajo_subio} {diferencia_entre_semanas}% con respecto a la semana {semana_del_año-2}."
+                    mensaje_var_intersemanal = f"La variación de precios de la canasta básica la semana numero {semana_del_año-1} es del {variacion_semana[0]}%."
+                    print(mensaje_var_semanal)
                     print(mensaje_var_semanal)
                     client.create_tweet(text=mensaje_var_semanal)
+                    client.create_tweet(text=mensaje_var_intersemanal)
 
                 client.create_tweet(text=mensajes[0])
                 client.create_tweet(text=mensajes[1])

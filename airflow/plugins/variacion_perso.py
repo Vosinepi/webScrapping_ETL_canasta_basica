@@ -11,7 +11,16 @@ primer_dia_mes_actual = dt.datetime.now().replace(day=1).strftime("%Y-%m-%d")
 
 
 # fin de mes
-primer_dia_siguiente_mes = dt.date(fecha_actual.year, fecha_actual.month + 1, 1)
+next_month = fecha_actual.month + 1
+
+if next_month > 12:
+    next_month = 1  # Reset to 1 for the next year
+    year = fecha_actual.year + 1
+else:
+    year = fecha_actual.year
+
+print(next_month)
+primer_dia_siguiente_mes = dt.date(year, next_month, 1)
 print(primer_dia_siguiente_mes)
 ultimo_dia_mes_actual = primer_dia_siguiente_mes - dt.timedelta(days=1)
 print(ultimo_dia_mes_actual)
