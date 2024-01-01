@@ -1,4 +1,6 @@
 import requests as req
+import urllib.request
+import ssl
 import pandas as pd
 from bs4 import BeautifulSoup
 import re
@@ -8,6 +10,7 @@ from datetime import datetime, timedelta
 import shutil
 import sys
 import os
+
 
 from airflow import DAG  # type: ignore
 from airflow.decorators import task, dag  # type: ignore
@@ -19,14 +22,14 @@ from airflow.operators.email import EmailOperator  # type: ignore
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "plugins")))
 
 # from airflow.dags.certificados_ddbb import ddbb_pass, host, user, database}
-from certificados_ddbb import ddbb_pass, host, user, database
-from variacion_perso import variacion_personalizada, lista_variacion, lista_larga
+from certificados_ddbb import ddbb_pass, host, user, database  # type: ignore
+from variacion_perso import variacion_personalizada, lista_variacion, lista_larga  # type: ignore
 
 from fechas import (
     fecha,
     primer_dia_mes_actual,
     nombre_mes,
-)
+)  # type: ignore
 
 from bot_twit import (
     twitear,
@@ -130,20 +133,36 @@ def scrapping(canasta):
 
     :param canasta: un marco de datos con los productos a raspar
     """
+
     for producto in canasta.index:
         if canasta.loc[producto, "tipo_producto"] == "kilo":
-            url = req.get(canasta.loc[producto, "url_coto"])
+            # dejo la verificacion en false para que no me de error de certificado pero no es la mejor practica
+            url = req.get(canasta.loc[producto, "url_coto"], verify=False)
+            print(canasta.loc[producto, "url_coto"])
+            print(url)
 
             if url.status_code == 200:
                 kilo(canasta.loc[producto, "producto"], url)
+            elif url.status_code == 404:
+                # volver a correr el scrapping desde el producto que fallo
+                print("volviendo a correr scrapping")
+                scrapping(canasta.loc[producto:, :])
+                break
+
             else:
                 print("no hay url")
 
         elif canasta.loc[producto, "tipo_producto"] == "unidad":
-            url = req.get(canasta.loc[producto, "url_coto"])
+            # dejo la verificacion en false para que no me de error de certificado pero no es la mejor practica
+            url = req.get(canasta.loc[producto, "url_coto"], verify=False)
 
             if url.status_code == 200:
                 unidad(canasta.loc[producto, "producto"], url)
+            elif url.status_code == 404:
+                # volver a correr el scrapping desde el producto que fallo
+                print("volviendo a correr scrapping")
+                scrapping(canasta.loc[producto:, :])
+                break
             else:
                 print("no hay url")
 

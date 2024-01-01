@@ -34,6 +34,7 @@ from fechas import (
     primer_dia,
     nombre_mes,
     semana_del_año,
+    semana_pasada,
     primer_dia_semana_actual,
     primer_dia_semana_pasada,
     ultimo_dia_semana_pasada,
@@ -216,6 +217,41 @@ def twitear(lista_cantidad, dia1, dia2):
                     text="Mes nuevo, precios nuevos!, a cruzar los dedos 🤞."
                 )
                 print("Mes nuevo, precios nuevos!, a cruzar los dedos 🤞.")
+                if primer_dia_semana:
+                    # variacion semana pasada
+                    variacion_semana = variacion_personalizada(
+                        primer_dia_semana_pasada.strftime("%Y-%m-%d"),
+                        ultimo_dia_semana_pasada.strftime("%Y-%m-%d"),
+                    )
+                    # variacion semana pasada con respecto a la anterior
+                    variacion_semana_anterior = variacion_personalizada(
+                        (primer_dia_semana_pasada - timedelta(weeks=1)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                        (ultimo_dia_semana_pasada - timedelta(weeks=1)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                    )
+                    print(variacion_semana)
+                    print(variacion_semana_anterior)
+                    # variacion con respecto a la semana anterior a la anterior
+                    diferencia_entre_semanas = round(
+                        (variacion_semana[1] / variacion_semana_anterior[1] - 1) * 100,
+                        2,
+                    )
+                    if diferencia_entre_semanas < 0:
+                        bajo_subio = "bajó"
+                    else:
+                        bajo_subio = "subió"
+
+                    # La variación de precios de la canasta básica la semana 39 bajó/subió 1.49% respecto a la semana 38.
+                    mensaje_var_semanal = f"La variación de precios de la canasta básica la semana numero {semana_pasada} {bajo_subio} {diferencia_entre_semanas}% con respecto a la semana {semana_pasada-1}."
+                    mensaje_var_intersemanal = f"La variación de precios de la canasta básica la semana numero {semana_pasada} es del {variacion_semana[0]}%."
+                    print(mensaje_var_semanal)
+                    print(mensaje_var_semanal)
+                    client.create_tweet(text=mensaje_var_semanal)
+                    client.create_tweet(text=mensaje_var_intersemanal)
+
             else:
                 if primer_dia_semana:
                     # variacion semana pasada

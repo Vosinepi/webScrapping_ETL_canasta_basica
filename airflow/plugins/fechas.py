@@ -36,7 +36,13 @@ print(primer_dia)
 
 # Obtener la semana del año
 semana_del_año = fecha_actual.isocalendar()[1]
+
+
 print(f"Semana del año: {semana_del_año}")
+semana_pasada = semana_del_año - 1
+if semana_pasada == 0:
+    semana_pasada = 52
+print(f"Semana pasada: {semana_pasada}")
 
 # Obtener la primer fecha de la semana actual
 primer_dia_semana_actual = fecha_actual - dt.timedelta(days=fecha_actual.weekday())
