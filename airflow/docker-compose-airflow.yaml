@@ -139,6 +139,13 @@ services:
       timeout: 10s
       retries: 5
     restart: always
+  selenium:
+    container_name: remote_chromedriver
+    image: seleniarm/standalone-chromium:latest
+    shm_size: 2gb
+    ports:
+      - 4444:4444
+    restart: always  
 
 volumes:
   postgres-db-volume:

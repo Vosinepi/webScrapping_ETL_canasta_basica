@@ -10,7 +10,11 @@ from datetime import datetime, timedelta
 import shutil
 import sys
 import os
-
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from airflow import DAG  # type: ignore
 from airflow.decorators import task, dag  # type: ignore
@@ -24,6 +28,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "plug
 # from airflow.dags.certificados_ddbb import ddbb_pass, host, user, database}
 from certificados_ddbb import ddbb_pass, host, user, database  # type: ignore
 from variacion_perso import variacion_personalizada, lista_variacion, lista_larga  # type: ignore
+
+from telegfram_bot import telegram_bot_sendtext  # type: ignore
 
 from fechas import (
     fecha,
@@ -59,7 +65,7 @@ variacion = variacion_personalizada(primer_dia_mes_actual, fecha)
 index_error = []  # lista de productos que no se encuentran en la pagina web
 
 
-def kilo(nombre_producto, producto_url, porcion=1):
+def kilo(nombre_producto, pagina, porcion=1):
     """
     Toma un nombre de producto y una URL, y devuelve el precio del producto.
 
@@ -68,13 +74,29 @@ def kilo(nombre_producto, producto_url, porcion=1):
     :param porcion: la cantidad del producto que desea comprar, defaults to 1 (optional)
     :return: el valor de la variable "listado"
     """
-    valor = BeautifulSoup(producto_url.text, "html.parser")
-    valor = valor.find_all("span", class_="unit")
+    # pagina = BeautifulSoup(producto_url.page_source, "html.parser")
+    # pagina = pagina.get_text
+    product_info_container = pagina.find_all("div", id="productInfoContainer")
+    disponibilidad = product_info_container[0].find_all(
+        "div", class_="product_not_available"
+    )
+
+    disponibilidad = product_info_container[0].find_all(
+        "div", class_="product_not_available"
+    )
 
     nombre = nombre_producto.replace(" ", "_")
+    if nombre == "SalchichÂ¢n":
+        nombre = "salchich¢n"
+
+    if disponibilidad:
+        listado.update({nombre: 0})
+        print(f"{nombre} no disponible, {listado[nombre]}")
+        return None
 
     try:
-        valor = valor[0].get_text()
+        # busco dentro de product_info_container el span con la clase unit
+        valor = product_info_container[0].find_all("span", class_="unit")[0].get_text()
     except IndexError:
         listado.update({nombre: 0})
         index_error.append(nombre)
@@ -93,7 +115,7 @@ def kilo(nombre_producto, producto_url, porcion=1):
         print("No se encontró un número en el string")
 
 
-def unidad(nombre_producto, producto_url):
+def unidad(nombre_producto, pagina):
     """
     Toma un nombre de producto y una URL, y devuelve el precio del producto.
 
@@ -101,13 +123,30 @@ def unidad(nombre_producto, producto_url):
     :param producto_url: La URL del producto
     :return: el valor de la variable "número"
     """
-    valor = BeautifulSoup(producto_url.text, "html.parser")
-    valor = valor.find_all("span", class_="atg_store_newPrice")
+    # pagina = BeautifulSoup(producto_url.page_source, "html.parser")
+    # pagina = pagina.get_text
+    product_info_container = pagina.find_all("div", id="productInfoContainer")
+    # dentro del product_info_container busco el div con la clase product_not_available
+    disponibilidad = product_info_container[0].find_all(
+        "div", class_="product_not_available"
+    )
 
     nombre = nombre_producto.replace(" ", "_")
+    if nombre == "SalchichÂ¢n":
+        nombre = "salchich¢n"
+    print(f"El nombres es {nombre}")
+
+    if disponibilidad:
+        listado.update({nombre: 0})
+        print(f"{nombre} no disponible, {listado[nombre]}")
+        return None
 
     try:
-        valor = valor[0].get_text()
+        valor = (
+            product_info_container[0]
+            .find_all("span", class_="atg_store_newPrice")[0]
+            .get_text()
+        )
     except IndexError:
         listado.update({nombre: 0})
         index_error.append(nombre)
@@ -133,36 +172,55 @@ def scrapping(canasta):
 
     :param canasta: un marco de datos con los productos a raspar
     """
+    # chromedriver path
+    remote_webdriver = "remote_chromedriver"
+
+    # Instantiate ChromeOptions
+    chrome_options = webdriver.ChromeOptions()
+
+    # Activate headless mode
+    chrome_options.add_argument("--headless=new")
+
+    # Instantiate a webdriver instance
+    # driver = webdriver.Chrome(options=chrome_options, executable_path=chromedriver)
+    driver = webdriver.Remote(f"{remote_webdriver}:4444/wd/hub", options=chrome_options)
+
+    def status():
+        try:
+            status = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
+            )
+            return True
+        except TimeoutException:
+            print("TimeoutException")
+            driver.quit()
+            return None
 
     for producto in canasta.index:
         if canasta.loc[producto, "tipo_producto"] == "kilo":
-            # dejo la verificacion en false para que no me de error de certificado pero no es la mejor practica
-            url = req.get(canasta.loc[producto, "url_coto"], verify=False)
-            print(canasta.loc[producto, "url_coto"])
-            print(url)
 
-            if url.status_code == 200:
-                kilo(canasta.loc[producto, "producto"], url)
-            elif url.status_code == 404:
-                # volver a correr el scrapping desde el producto que fallo
-                print("volviendo a correr scrapping")
-                scrapping(canasta.loc[producto:, :])
-                break
+            if status() == True:
+                print(canasta.loc[producto, "url_coto"])
+                driver.get(canasta.loc[producto, "url_coto"])
 
+                driver.implicitly_wait(10)
+                pagina = BeautifulSoup(driver.page_source, "html.parser")
+
+                kilo(canasta.loc[producto, "producto"], pagina)
             else:
                 print("no hay url")
 
         elif canasta.loc[producto, "tipo_producto"] == "unidad":
             # dejo la verificacion en false para que no me de error de certificado pero no es la mejor practica
-            url = req.get(canasta.loc[producto, "url_coto"], verify=False)
 
-            if url.status_code == 200:
-                unidad(canasta.loc[producto, "producto"], url)
-            elif url.status_code == 404:
-                # volver a correr el scrapping desde el producto que fallo
-                print("volviendo a correr scrapping")
-                scrapping(canasta.loc[producto:, :])
-                break
+            if status() == True:
+                print(canasta.loc[producto, "url_coto"])
+                driver.get(canasta.loc[producto, "url_coto"])
+
+                driver.implicitly_wait(10)
+                pagina = BeautifulSoup(driver.page_source, "html.parser")
+
+                unidad(canasta.loc[producto, "producto"], pagina)
             else:
                 print("no hay url")
 
@@ -391,6 +449,10 @@ def backup():
             "/opt/airflow/data/precios.xlsx",
             f"/opt/airflow/data/backup/precios{fecha}.xlsx",
         )
+        shutil.copy(
+            "/opt/airflow/data/precios_lista_larga.csv",
+            f"/opt/airflow/data/backup/precios_lista_larga{fecha}.csv",
+        )
     except:
         print("Error al hacer el backup")
 
@@ -472,7 +534,14 @@ t4 = PythonOperator(
     dag=dag,
 )
 
-t5 = EmailOperator(
+t5 = PythonOperator(
+    task_id="telegram_bot",
+    python_callable=telegram_bot_sendtext,
+    op_kwargs={"lista_cantidad": 6, "dia1": primer_dia_mes_actual, "dia2": fecha},
+    dag=dag,
+)
+
+t6 = EmailOperator(
     task_id="email",
     to="ismaelpiovani@gmail.com",
     subject="Bot_twitter_canasta_basica",
@@ -490,4 +559,4 @@ t5 = EmailOperator(
 )
 
 
-t0 >> t1 >> t2 >> t3 >> t4 >> t5  # type: ignore
+t0 >> t1 >> t2 >> t3 >> t4 >> t5 >> t6  # type: ignore

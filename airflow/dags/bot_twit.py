@@ -15,6 +15,7 @@ from airflow.models import Variable
 # Agregar la carpeta 'plugins' al PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "plugins")))
 
+
 # Credenciales de Twitter
 from certificados_twitter import api_key, api_secret_key, access_token, secret_token
 from variacion_perso import (
@@ -116,6 +117,16 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
         # saco los guines bajos de los nombres de los productos
         max = {k.replace("_", " "): v for k, v in max.items()}
         min = {k.replace("_", " "): v for k, v in min.items()}
+
+        # saco los productos con variacion cero
+        max = {k: v for k, v in max.items() if v != 0.00}
+        min = {k: v for k, v in min.items() if v != 0.00}
+
+        if max == {}:  # si no hay variacion
+            max = None
+        if min == {}:  # si no hay variacion
+            min = None
+
         print(max)
         print(min)
     except:
@@ -134,29 +145,34 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
     elif es_fin_de_mes:
         mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} es del {variacion[0]}%."
         mensaje_max = f"Los productos con mayor variación del mes de {nombre_mes} son: "
-        mensaje_max += (
-            ", ".join(
+        if max is not None:
+            mensaje_max += ", ".join(
                 [
                     f"\n{variacion:.2f}% para {producto}"
                     for producto, variacion in max.items()
                 ]
             )
-            if max is not None
-            else mensaje_max + " No items found."
-        )
+
+        else:
+            mensaje_max = (
+                mensaje_max + " No hay productos con aumento de precios aun. :)"
+            )
+
         mensaje_min = (
             f"Los productos que más redujeron su precio en el mes de {nombre_mes} son: "
         )
-        mensaje_min += (
-            ", ".join(
+        if min is not None:
+            mensaje_min += ", ".join(
                 [
                     f"\n{variacion:.2f}% para {producto}"
                     for producto, variacion in min.items()
                 ]
             )
-            if min is not None
-            else mensaje_min + " No items found."
-        )
+
+        else:
+            mensaje_min = (
+                mensaje_min + " No hay productos con reduccion de precios aun. :("
+            )
 
         return mensaje, mensaje_max, mensaje_min, no_disponible
 
@@ -164,27 +180,31 @@ def mensaje_twitter(lista_cantidad, dia1, dia2):
     else:
         mensaje = f"La variación de precios de la canasta básica en el mes de {nombre_mes} al día {dt.datetime.now().day} es del {variacion[0]}%."
         mensaje_max = f"Los productos con mayor aumento de {nombre_mes} al día de hoy {dt.datetime.now().day} son:"
-        mensaje_max += (
-            ", ".join(
+        if max is not None:
+            mensaje_max += ", ".join(
                 [
                     f"\n{variacion:.2f}% para {producto}"
                     for producto, variacion in max.items()
                 ]
             )
-            if max is not None
-            else mensaje_max + " No items found."
-        )
+
+        else:
+            mensaje_max = (
+                mensaje_max + " No hay productos con aumento de precios aun. :)"
+            )
         mensaje_min = f"Los productos con mayor reducción de precio en el mes de {nombre_mes} al día de hoy {dt.datetime.now().day} son:"
-        mensaje_min += (
-            ", ".join(
+        if min is not None:
+            mensaje_min += ", ".join(
                 [
                     f"\n{variacion:.2f}% para {producto}"
                     for producto, variacion in min.items()
                 ]
             )
-            if min is not None
-            else mensaje_min + " No items found."
-        )
+
+        else:
+            mensaje_min = (
+                mensaje_min + " No hay productos con reduccion de precios aun. :("
+            )
 
         return mensaje, mensaje_max, mensaje_min, no_disponible
 

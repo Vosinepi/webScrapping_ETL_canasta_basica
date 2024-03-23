@@ -5,13 +5,16 @@ logs/
 pgdata/
 backup/
 cloud_canasta/
+scripts/
+
 # Ignorar archivos de caché
 __pycache__/
 *.py[cod]
 
 # Ignorar archivos de registro
 *.log
-
+*.session
+*.session-journal
 # Ignorar archivos de configuración local
 .env
 
@@ -24,8 +27,9 @@ certificados_ddbb.py
 certificados_twitter.py
 robot-yami.py
 airflow.cfg
-```
+mycert.crt
+mycert.pem
+certificados_telegram.py
 
-
-
-
+airflow/airflow.cfg
+.vscode/settings.json
