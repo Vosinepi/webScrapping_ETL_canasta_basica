@@ -1,6 +1,3 @@
-import requests as req
-import urllib.request
-import ssl
 import pandas as pd
 from bs4 import BeautifulSoup
 import re
