@@ -120,6 +120,5 @@ Publica los precios de los productos en Twitter.
 ## Contacto
 
 - [Linkedin](https://www.linkedin.com/in/iber-ismael-piovani-8b35bbba/)
-- [Twitter](https://twitter.com/laimas)
 - [Github](https://github.com/Vosinepi)
 ```
