@@ -112,7 +112,7 @@ def kilo(nombre_producto, pagina, porcion=1):
         print("No se encontró un número en el string")
 
 
-def unidad(nombre_producto, pagina):
+def unidad(nombre_producto, pagina, porcion=1):
     """
     Toma un nombre de producto y una URL, y devuelve el precio del producto.
 
@@ -154,8 +154,8 @@ def unidad(nombre_producto, pagina):
 
     if match:
         number = float(match.group(1).replace(".", "").replace(",", "."))
-        print(nombre, number)
-        listado.update({nombre: number})
+        print(nombre, number * porcion)
+        listado.update({nombre: number * porcion})
 
     else:
         listado.update({nombre: 0})
@@ -524,19 +524,19 @@ t3 = PythonOperator(
     dag=dag,
 )
 
-t4 = PythonOperator(
-    task_id="twitear",
-    python_callable=twitear,
-    op_kwargs={"lista_cantidad": 4, "dia1": primer_dia_mes_actual, "dia2": fecha},
-    dag=dag,
-)
+# t4 = PythonOperator(
+#     task_id="twitear",
+#     python_callable=twitear,
+#     op_kwargs={"lista_cantidad": 4, "dia1": primer_dia_mes_actual, "dia2": fecha},
+#     dag=dag,
+# )
 
-t5 = PythonOperator(
-    task_id="telegram_bot",
-    python_callable=telegram_bot_sendtext,
-    op_kwargs={"lista_cantidad": 6, "dia1": primer_dia_mes_actual, "dia2": fecha},
-    dag=dag,
-)
+# t5 = PythonOperator(
+#     task_id="telegram_bot",
+#     python_callable=telegram_bot_sendtext,
+#     op_kwargs={"lista_cantidad": 6, "dia1": primer_dia_mes_actual, "dia2": fecha},
+#     dag=dag,
+# )
 
 t6 = EmailOperator(
     task_id="email",
@@ -556,4 +556,6 @@ t6 = EmailOperator(
 )
 
 
-t0 >> t1 >> t2 >> t3 >> t4 >> t5 >> t6  # type: ignore
+# t0 >> t1 >> t2 >> t3 >> t4 >> t5 >> t6  # type: ignore
+
+t0 >> t1 >> t2 >> t3 >> t6  # type: ignore
